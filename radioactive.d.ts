@@ -136,6 +136,12 @@ declare module "radioactive" {
             set( v: Error ): void
 
             ( e?: Error, v?: T ): void
+
+            /**
+             * Whether someone is interested in knowing if our value changes.
+             * This may change at any time as the cell may be accessed and notifiers requested.
+             */
+            monitored():boolean
         }
     }
 
