@@ -8,8 +8,7 @@
     "watch": "./node_modules/coffee-script/bin/coffee -cw -o ./dist ./src",
     "build": "./node_modules/coffee-script/bin/coffee -c -o ./dist ./src",
     "clean": "rm dist/*.js",
-    "prepublish": "npm run build",
-    "postpublish": "npm run clean"
+    "prepublish": "npm run build"
   },
   "author": "aldo.bucchi@gmail.com",
   "license": "MIT",
