@@ -17,11 +17,7 @@
             // we watch the expression for changes
             $(function(){
                 radioactive.loop(function(){
-                    try {
-                        $("#content").text( fullname().toUpperCase() )
-                    } catch( e ){
-                        console.log( e )
-                    }
+                  $("#content").text( fullname().toUpperCase() )
                 })
             })
 
