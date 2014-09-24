@@ -510,11 +510,7 @@ compare_semver = ( v1, v2 ) ->
   'EQ'
 
 
-
-
-in_browser = false
-try in_browser = yes if window?
-GLOBAL = if in_browser then window else global
+GLOBAL = try window catch then global
 
 # only build and replace if we are newer than the existing implementation
 do conditional_build = ->
