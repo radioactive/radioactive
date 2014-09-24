@@ -14,10 +14,10 @@ build_helper = ->
   ret.notify = -> n?()
   ret
 
-describe 'radioactive.loop', ->
+describe 'radioactive.react', ->
 
   it 'should run at least once if it contains an R(0) expression', (done) ->
-    radioactive.loop -> done()
+    radioactive.react -> done()
 
   ###
   radioactive.loop will always run asynchronously.
@@ -25,7 +25,7 @@ describe 'radioactive.loop', ->
   ###
   it 'should always run asynchronously', ( done ) ->
     counter = 0
-    radioactive.loop -> counter++
+    radioactive -> counter++
     counter.should.equal 0
     delay STEP, ->
       counter.should.equal 1
@@ -33,7 +33,7 @@ describe 'radioactive.loop', ->
 
   it 'should run only once if expression is not reactive', ( done ) ->
     counter = 0
-    radioactive.loop -> counter++
+    radioactive -> counter++
     counter.should.equal 0
     delay STEP, ->
       counter.should.equal 1
@@ -44,7 +44,7 @@ describe 'radioactive.loop', ->
   it 'run more than once if expression is reactive and notifies()', (done) ->
     helper = build_helper()
     counter = 0
-    radioactive.loop ->
+    radioactive ->
       counter++
       helper()
     counter.should.equal 0
@@ -62,7 +62,7 @@ describe 'radioactive.loop', ->
   it 'should wait and retry', (done) ->
     echo = radioactive.echo 10
     rets = []
-    radioactive.loop ->
+    radioactive ->
       rets.push '|'
       rets.push echo 'a'
       rets.push echo 'b'
@@ -75,7 +75,7 @@ describe 'radioactive.loop', ->
   it 'should work with fork', (done) ->
     echo = radioactive.echo 10
     rets = []
-    radioactive.loop ->
+    radioactive ->
       fork = radioactive.fork()
       fecho = (str) -> ( fork -> echo str ) or '?'
       rets.push '|'

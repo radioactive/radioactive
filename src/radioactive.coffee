@@ -246,13 +246,13 @@ class Iterator extends Base
   @current_cache: -> @stack.get().cache # : Object
 
 
-class Loop extends Base
+class ReactiveLoop extends Base
   constructor: ( expr , @opts = null ) ->
     super()
     @opts ?= {}
     @opts.debounce ?= DEFAULT_LOOP_DELAY
     @opts.detached ?= true
-    @iter = new Iterator => Loop.stack.run expr, => @
+    @iter = new Iterator => ReactiveLoop.stack.run expr, => @
     @_attach_to_parent()
     @_request_loop()
 
@@ -287,8 +287,8 @@ class Loop extends Base
   parent_iteration_count: undefined
   _attach_to_parent: ->
     unless @opts.detached
-      if Loop.stack.defined()
-        @parent = Loop.stack.get
+      if ReactiveLoop.stack.defined()
+        @parent = ReactiveLoop.stack.get
         @parent_iteration_count = @parent.iteration_count()
 
   @stack: new StackVal
@@ -309,12 +309,12 @@ syncify = ( async_func, global = false ) ->
           async_func.apply null, args.concat [c]
           c
       reset = ( filter ) ->
-        for own k, v of cells when (not filter?) or filter JSON.parse k
+        for own k, v of cells when not filter? or filter JSON.parse k
           if v.monitored() then c( new WaitSignal ) else delete cells[k] # TODO: destroy cell
       {get, reset}
     iteration_scoped = -> Iterator.current_cache()[ id ] ?= build()
     instance_scoped  = -> instance_scoped_cache_lazy     ?= build()
-    if ( global ) then instance_scoped() else iteration_scoped()
+    if global then instance_scoped() else iteration_scoped()
   api       = -> cache().get Array::slice.apply arguments
   api.reset = ( filter ) -> instance_scoped_cache().reset filter
   api
@@ -406,7 +406,7 @@ build_cell = ( initial_value ) ->
 
 loop_with_callback = ( expr, cb ) ->
   stop_flag = false
-  radioactive.loop ->
+  radioactive.react ->
     radioactive.stop() if stop_flag
     try
       cb null, expr()
@@ -423,7 +423,7 @@ build_public_api = ->
     a = arguments
     switch typeof a[0]
       when 'function'
-        radioactive.loop a[0]
+        radioactive.react a[0]
       else
         build_cell a[0]
 
@@ -447,15 +447,15 @@ build_public_api = ->
     res.result
 
   # TODO: options
-  radioactive.loop      = ->
+  radioactive.react = ->
     a = arguments
     switch typeof a[0] + ' ' + typeof a[1]
       when 'function undefined'
-        new Loop a[0]
+        new ReactiveLoop a[0]
       when 'function function'
         loop_with_callback a[0], a[1]
 
-  radioactive.once = ( expr ) -> radioactive.loop ->
+  radioactive.once = ( expr ) -> radioactive.react ->
     expr()
     radioactive.stop()
 

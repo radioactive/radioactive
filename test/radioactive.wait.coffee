@@ -7,7 +7,7 @@ describe 'radioactive.wait', ->
 
   it 'should interrupt execution within a loop', (done) ->
     count = 0
-    radioactive.loop ->
+    radioactive ->
       count++
       radioactive.wait()
       count++

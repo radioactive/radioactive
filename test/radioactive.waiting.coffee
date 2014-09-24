@@ -6,17 +6,17 @@ radioactive = require './radioactive'
 describe 'radioactive.waiting', ->
 
   it 'should return true when block throws a wait signal', (done) ->
-    radioactive.loop ->
+    radioactive ->
       r = radioactive.waiting -> radioactive.wait()
       unless r then done new Error() else done()
 
   it 'should return false when block does not throw a wait signal', (done) ->
-    radioactive.loop ->
+    radioactive ->
       r = radioactive.waiting ->
       if r then done new Error() else done()
 
   it 'should return false when block throws any other type of error', (done) ->
-    radioactive.loop ->
+    radioactive ->
       r = radioactive.waiting -> throw new Error
       if r then done new Error() else done()
 
@@ -25,7 +25,7 @@ describe 'radioactive.waiting', ->
     cell = radioactive.cell new radioactive.WaitSignal
     results = []
 
-    radioactive.loop ->
+    radioactive ->
       results.push radioactive.waiting cell
 
     ut.delay 100, ->

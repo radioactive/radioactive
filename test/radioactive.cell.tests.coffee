@@ -44,7 +44,7 @@ describe 'a cell', ->
       should.not.exist values[2][0]
       should.not.exist values[2][1]
       done()
-    X.loop ->
+    X ->
       try
         values.push [null, c()]
       catch e
