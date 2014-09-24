@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript" src="../dist/radioactive.js"></script>
+        <script type="text/javascript">
+
+            // use cells as the basis for a reactive model
+            var name_cell     = radioactive.cell('Bob')
+            var lastname_cell = radioactive('Marley')
+
+            // you can combine cells in any way you want
+            // notice that you can use cell() or cell.get() to access the current value
+            function fullname(){
+                return name_cell() + ' ' + lastname_cell.get()
+            }
+
+            // we watch the expression for changes
+            $(function(){
+                radioactive.loop(function(){
+                    try {
+                        $("#content").text( fullname().toUpperCase() )
+                    } catch( e ){
+                        console.log( e )
+                    }
+                })
+            })
+
+            // update the cells in 3 seconds
+            setTimeout(function(){
+                name_cell('Jason')
+                lastname_cell.set('Mraz')
+            }, 3000)
+
+        </script>
+    </head>
+    <body>
+        <p id="content"></p>
+    </body>
+</html>
