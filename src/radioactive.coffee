@@ -258,9 +258,9 @@ class ReactiveLoop extends Base
 
   _request_loop: ->
     clearTimeout @loop_timeout if @loop_timeout?
-    @loop_timeout = setTimeout @loop, @opts.debounce
+    @loop_timeout = setTimeout @_loop, @opts.debounce
 
-  loop: =>
+  _loop: =>
     if @_eol_heuristics()
       @iter.refresh()
       if @iter.current().error instanceof StopSignal
