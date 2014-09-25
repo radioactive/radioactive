@@ -263,9 +263,11 @@ class ReactiveLoop extends Base
   _loop: =>
     if @_eol_heuristics()
       @iter.refresh()
-      if @iter.current().error instanceof StopSignal
+      err = @iter.current().error
+      if err instanceof StopSignal
         @stop()
       else
+        if err? then try console.log err
         @iter.once "change", => @_request_loop()
     else
       @stop()
