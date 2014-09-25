@@ -62,11 +62,39 @@ declare module "radioactive" {
          */
         function wait(): void;
 
-        /**
-         *
-         * @param async
-         */
+
         function syncify( async: Function ): Function;
+
+        function syncify( opts: SyncifyOpts ): Function;
+
+        interface SyncifyOpts {
+
+            /**
+             * Force expiration of cached results after N milliseconds.
+             * Defaults to 0 ( = infinite ).
+             * If you want to achieve polling functionality.
+             */
+            ttl?: number ;
+
+            /**
+             *
+             * @param args
+             */
+            hasher?: ( args: Array<any> ) => string ;
+
+
+            /**
+             *
+             */
+            global?: boolean ;
+
+
+            func: Function ;
+
+        }
+
+
+
 
 
         function echo( delay: number = 1000 ): ( string ) => void;
@@ -143,6 +171,12 @@ declare module "radioactive" {
              */
             monitored():boolean
         }
+
+
+
+
+
+
     }
 
 export = r;

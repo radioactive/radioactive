@@ -296,27 +296,34 @@ class ReactiveLoop extends Base
   @stack: new StackVal
 
 
-syncify = ( async_func, global = false ) ->
+syncify = ( opts ) ->
+  opts = func: opts if typeof opts is 'function'
+  opts.global ?= no
+  opts.ttl    ?= 0
+  opts.hasher ?= JSON.stringify
+
   id = serial()
   instance_scoped_cache_lazy = undefined
   cache = ->
     build = ->
       cells = {}
       get = ( args ) ->
-        if args.length isnt async_func.length - 1
+        if args.length isnt opts.func.length - 1
           # TODO: improve this error message. We have more info at hand
-          throw new Error 'Wrong number of arguments for syncified function ' + async_func.toString()
-        do cells[ JSON.stringify args ] ?= do ->
+          throw new Error 'Wrong number of arguments for syncified function ' + opts.func.toString()
+        do cells[ opts.hasher args ] ?= do ->
           c = build_cell new WaitSignal
-          async_func.apply null, args.concat [c]
+          c.___args = args
+          opts.func.apply null, args.concat [c]
           c
       reset = ( filter ) ->
-        for own k, v of cells when not filter? or filter JSON.parse k
-          if v.monitored() then c( new WaitSignal ) else delete cells[k] # TODO: destroy cell
+        for own k, cell of cells when not filter? or filter cell.___args
+          if cell.monitored() then c( new WaitSignal ) else delete cells[k] # TODO: destroy cell
       {get, reset}
+    # TODO: TTL
     iteration_scoped = -> Iterator.current_cache()[ id ] ?= build()
     instance_scoped  = -> instance_scoped_cache_lazy     ?= build()
-    if global then instance_scoped() else iteration_scoped()
+    if opts.global then instance_scoped() else iteration_scoped()
   api       = -> cache().get Array::slice.apply arguments
   api.reset = ( filter ) -> instance_scoped_cache().reset filter
   api

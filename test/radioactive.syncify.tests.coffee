@@ -15,7 +15,7 @@ describe 'radioactive.syncify', ->
   describe 'should create a service which', ->
 
     it 'should throw a WaitSignal initially', (done) ->
-      uc = radioactive.syncify ucasync, true
+      uc = radioactive.syncify func: ucasync, global: true
       try
         uc 'Hello'
       catch e
@@ -28,7 +28,7 @@ describe 'radioactive.syncify', ->
 
 
     it 'should return a value if we give it enough time', (done) ->
-      uc = radioactive.syncify ucasync, true
+      uc = radioactive.syncify func: ucasync, global: true
       try # it will throw a WaitSignal the first time
         uc 'Hello'
       ut.delay 30, ->
