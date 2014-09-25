@@ -1,0 +1,37 @@
+<html>
+<head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+    <script type="text/javascript" src="../../dist/radioactive.js"></script>
+    <script type="text/javascript" src="./radioactive-firebase.js"></script>
+    <script type="text/javascript">
+
+        var OPENEXCHANGERATES_APP_ID = '4a363014b909486b8f49d967b810a6c3'
+
+        // This example shows how easy it is to combine multiple async services
+        // even when one of them is reactive
+
+        // first. lets create a syncified jsonp service on top of jQuery ajax
+        var jsonp = radioactive.syncify( function( url, cb ){
+            $.ajax({ dataType: "json", url: url, success: function(data){ cb( null, data )} });
+        })
+
+        // our our syncified ajax service to get current exchange rates
+        function rate( code ){ return jsonp('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?').rates[code] }
+
+        // lets get the exchange rate for bitcoin in real time from firebase
+        // https://www.firebase.com/docs/open-data/cryptocurrencies.html
+        var bitcoin  = new Firebase("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+
+        $(function(){
+            radioactive(function(){
+                $("#content").text( "1 BTC = " + ( bitcoin.get() * rate("EUR")) + " EUR" );
+            })
+        })
+
+    </script>
+</head>
+<body>
+<p id="content"></p>
+</body>
+</html>
