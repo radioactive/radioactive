@@ -28,6 +28,12 @@
         var defaultCurrency  = "USD"
         var selectedCurrency = radioactive( defaultCurrency )
 
+
+        function content(){
+            return "1 BTC = " + ( bitcoin.get() * rate(selectedCurrency())) + " " + selectedCurrency()
+        }
+
+
         // UI
         $(function(){
 
@@ -47,8 +53,13 @@
             })
 
             radioactive(function(){
-                $("#content").text( "1 BTC = " + ( bitcoin.get() * rate(selectedCurrency())) + " " + selectedCurrency() );
+                if ( radioactive.waiting( content ) ){
+                    $("#content").text( "loading..." );
+                } else {
+                    $("#content").text( content() );
+                }
             })
+
         })
 
     </script>
