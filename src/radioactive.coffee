@@ -423,9 +423,11 @@ build_public_api = ->
 
   radioactive = ->
     a = arguments
-    switch typeof a[0]
-      when 'function'
+    switch ( typeof a[0] ) + ' ' + ( typeof a[1] )
+      when 'function undefined'
         radioactive.react a[0]
+      when 'function function'
+        radioactive.react a[0], a[1]
       else
         build_cell a[0]
 
