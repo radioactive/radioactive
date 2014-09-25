@@ -48,7 +48,7 @@ T '|1_2_3|1A2B34', (echo, x) ->
   fork.join()
   x '4'
 
-describe.only 'radioactive.fork', ->
+describe 'radioactive.fork', ->
   it 'should work', ( done ) ->
     do iter = ( error = null ) ->
       if error?
