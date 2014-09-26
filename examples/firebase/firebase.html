@@ -1,28 +1,36 @@
+<!doctype html>
 <html>
-<head>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
-    <script type="text/javascript" src="../../dist/radioactive.js"></script>
-    <script type="text/javascript" src="./radioactive-firebase.js"></script>
-    <script type="text/javascript">
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script src="./radioactive-firebase.js"></script>
+        <script>
 
-        $(function(){
+            /**
+             * Notice how we can now call .get() to access the value of Firebase references.
+             * - The expressions are fully reactive ( they change if data changes )
+             * - Even though it takes some time for data to arrive from the server
+             *   we don't have to deal with callbacks.
+             */
 
-            var name     = new Firebase("https://d88d9s8.firebaseio.com/name");
-            var lastname = new Firebase("https://d88d9s8.firebaseio.com/lastname");
+            $(function(){
 
-            radioactive(function(){
+                var name     = new Firebase("https://d88d9s8.firebaseio.com/name");
+                var lastname = new Firebase("https://d88d9s8.firebaseio.com/lastname");
 
-                console.log( name.get() );
+                function fullname(){
+                    return name.get() + " " + lastname.get()
+                }
 
-                $("#content").text( name.get() + " " + lastname.get() );
-
+                radioactive(function(){
+                    $("#content").text( fullname() )
+                })
             })
-        })
 
-    </script>
-</head>
-<body>
-<p id="content"></p>
-</body>
+        </script>
+    </head>
+    <body>
+        <p id="content"></p>
+    </body>
 </html>

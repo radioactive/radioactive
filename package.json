@@ -17,7 +17,8 @@
     "coffee-script": "~1.7.1",
     "mocha": "~1.21.4",
     "chai": "~1.9.1",
-    "ut": "0.0.1"
+    "ut": "0.0.1",
+    "rx": "~2.3.11"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://cdn.pubnub.com/pubnub.min.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script src="./rx.all.js"></script>
+        <script>
+
+            /**
+             * This example showcases how we can take full advantage of the
+             * feature rich reactive extensions for javascript.
+             * https://github.com/Reactive-Extensions/RxJS
+             *
+             * We are creating an Rx.Observable instance and exposing it
+             * as a radioactive expression.
+             */
+
+            $(function(){
+                var $input  = $('#input')
+                var $output = $('#output')
+                var getInputValue = radioactive.rx(
+                        Rx.Observable
+                            .fromEvent( $input, 'keyup' )
+                            .map(function (e) { return e.target.value })
+                            .filter(function (text) { return text.length > 2 })
+                            .throttle(300)
+                            .distinctUntilChanged()
+                        )
+
+                radioactive(function(){
+                    $output.text( getInputValue().toUpperCase() )
+                })
+            })
+
+        </script>
+    </head>
+    <body>
+        <input type="text" id="input"/>
+        <p id="output"></p>
+    </body>
+</html>

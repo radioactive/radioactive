@@ -3,7 +3,7 @@
 Adding radioactivity to any data producing framework is easy and can be achieved
 with a few lines of code.
 
-The following snipped of code is all that it takes to make Firebase fully radioactive.
+The following snippet is all that it takes to make Firebase fully radioactive.
 All 'Firebase' instances will now have an R(2) get() method.
 
 TODO: GC listeners

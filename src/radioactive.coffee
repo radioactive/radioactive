@@ -1,8 +1,6 @@
 VERSION = '1.0.0'
 
-_serial = 0
-serial  = -> _serial++
-
+serial = do -> ii = 0 ; -> ii++
 
 DEBUG                      = yes
 DEFAULT_LOOP_DELAY         = 50
@@ -14,15 +12,16 @@ debug_error      = ( e ) -> console.log e if DEBUG and e? and ! is_special_error
 next_tick        = ( f ) -> setTimeout f, 1
 tap              = ( v ) -> ( f ) -> f v ; v
 
+delay            = -> setTimeout arguments[1], arguments[0]
+
+EQUALS           = (a, b) -> a is b
+
 
 class WaitSignal extends Error
-  constructor: ->
-    super()
-
+  constructor: -> super "WaitSignal"
 
 class StopSignal extends Error
-  constructor: ->
-    super()
+  constructor: -> super()
 
 
 class BasicEventEmitter
@@ -31,7 +30,7 @@ class BasicEventEmitter
     @_handlers = []
   emit: ( type, payload ) ->
     @_handlers.forEach (h) =>
-      if ( h.type is type ) and ( h.fire( payload ) is 0 )
+      if h.type is type and 0 is h.fire payload
         @_request_cleanup = yes
     @_cleanup()
   on:   ( type, f ) -> @_upsert type, f, -1
@@ -90,13 +89,11 @@ class StackVal
 
 
 class Base extends BasicEventEmitter
-  constructor: ->
-    super()
+  constructor: -> super()
 
 
 class Notifier extends Base
-  constructor: ( @monitor ) ->
-    super()
+  constructor: ( @monitor ) -> super()
   fire:                 -> @monitor.fire @
   cancel:               -> # TODO
   is_active:            -> yes # TODO: states
@@ -124,6 +121,19 @@ class NotifierPool extends Base
     ns = @notifiers
     @notifiers = []
     ns.forEach f
+
+
+class NotifierPoolWithValue
+  constructor: ->
+    @notifiers = new NotifierPool()
+    @current = Try.null
+  allocate: ->
+  set: ( e, r ) ->
+    @current = Try.resolve e, r
+    @notifiers.fire()
+  get: ->
+    @notifiers.allocate()
+    @current.get()
 
 
 class Monitor extends Base
@@ -173,12 +183,14 @@ class Try
       comparator other.error, @error
     else
       comparator other.result, @result
-  @eval: ( expr ) ->
-    try
-      new Try( null, expr() )
-    catch e
-      new Try( e )
-  @null: new Try( null, null )
+  @eval: ( expr ) -> try new Try null, expr() catch e then new Try e
+  @err: ( v ) -> new Try v, null
+  @res: ( v ) -> new Try null, v
+  @resolve: ( e, r ) ->
+    return e if e instanceof Try
+    if e? then new Try e, null else new Try null, r
+  @one: ( x ) -> if x instanceof Error then new Try x else new Try null, x
+  @null: new Try null, null
 
 
 class Token
@@ -296,6 +308,44 @@ class ReactiveLoop extends Base
   @stack: new StackVal
 
 
+
+class CellBasedCache
+
+  constructor: ( @opts = {} ) ->
+    @opts.hasher   ?= JSON.stringify
+    # whether to poll active cells for new values, and how frequently to do it
+    @opts.poll     ?= 0
+    # time before purging inactive cells
+    @opts.ttl      ?= 0
+    # comparator for cell values
+    @opts.equals   ?= EQUALS
+    # async function that produces the value
+    @opts.producer ?= throw new Error 'producer is required'
+    @_entries = {}
+
+  get: ( key ) ->
+    hash = @opts.hasher key
+    @_entries[hash] ?= do =>
+      entry = new CellBasedCacheEntry
+        producer: (cb) => @opts.producer key, cb
+        poll:     @opts.poll
+        equals:   @opts.equals
+      entry.___key = key
+      entry
+
+  reset: ( filter ) ->
+
+
+class CellBasedCacheEntry
+  constructor: ( @opts = {} ) ->
+    @opts.producer ?= throw new Error 'producer is required'
+    @opts.equals   ?= EQUALS
+    @opts.poll     ?= 0
+    @cell = build_cell new WaitSignal
+  get: ->
+  reset: ->
+
+
 syncify = ( opts ) ->
   opts = func: opts if typeof opts is 'function'
   opts.global ?= no
@@ -311,14 +361,26 @@ syncify = ( opts ) ->
         if args.length isnt opts.func.length - 1
           # TODO: improve this error message. We have more info at hand
           throw new Error 'Wrong number of arguments for syncified function ' + opts.func.toString()
-        do cells[ opts.hasher args ] ?= do ->
+        key = opts.hasher args
+        do cells[ key ] ?= do ->
           c = build_cell new WaitSignal
           c.___args = args
+          if opts.ttl isnt 0 then c.___timeout = delay opts.ttl, -> reset_cell key
           opts.func.apply null, args.concat [c]
           c
+      reset_cell = ( key ) ->
+        if ( cell = cells[key] )?
+          # 1. delete cell so we re-created on next call ( TODO: we could reuse it )
+          delete cells[key]
+          # 2. clear any associated timeouts if they exist
+          if cell.___timeout then clearTimeout cell.___timeout
+          # 3. let people know that something changed
+          #    no one has direct access to this cell. we just set it to something "different"
+          #    to trigger notifiers
+          if cell.monitored() then cell {}
+          # TODO: destroy cell?
       reset = ( filter ) ->
-        for own k, cell of cells when not filter? or filter cell.___args
-          if cell.monitored() then c( new WaitSignal ) else delete cells[k] # TODO: destroy cell
+        reset_cell k for own k, cell of cells when not filter? or filter cell.___args
       {get, reset}
     # TODO: TTL
     iteration_scoped = -> Iterator.current_cache()[ id ] ?= build()
@@ -327,6 +389,8 @@ syncify = ( opts ) ->
   api       = -> cache().get Array::slice.apply arguments
   api.reset = ( filter ) -> instance_scoped_cache().reset filter
   api
+
+
 
 
 fork = ->
@@ -363,12 +427,12 @@ class ReactiveEval
   lazy_monitor: -> @_monitor ?= new Monitor
   run: ->
     # evaluate expression first. it may create a monitor
-    # order is important ( mutable state sucks, I know )
     t = Try.eval @expr
     # and now compose result
     new ReactiveEvalResult t, @_monitor
   allocate_notifier: -> @lazy_monitor().notifier()
   @stack: []
+  # may return null
   @notifier: -> @stack[@stack.length - 1]?.allocate_notifier()
   @active:   -> @stack.length > 0
   @eval: ( expr ) ->
@@ -392,7 +456,7 @@ build_cell = ( initial_value ) ->
   notifiers     = new NotifierPool
   doget = ->
     notifiers.allocate()
-    if value? then value.get() else undefined
+    value?.get()
   doset = ( v ) ->
     new_t = if v instanceof Error then new Try v else new Try null, v
     return if new_t.compare value
@@ -403,8 +467,7 @@ build_cell = ( initial_value ) ->
     switch a.length
       when 0 then doget()
       when 1 then doset a[0]
-      when 2
-        if a[0]? then doset a[0] else doset a[1]
+      when 2 then doset a[0] or a[1]
   api.get = -> api()
   api.set = ( v ) -> api v
   api.monitored = -> notifiers.is_active()
@@ -413,30 +476,71 @@ build_cell = ( initial_value ) ->
 
 
 
+###
+  Promises
+###
+
+
+
+
+###
+  Integration with Reactive Extensions for Javascript
+  https://github.com/Reactive-Extensions
+###
+
+rxjs = do ->
+  # find the Rx module
+  rx_module = undefined
+  resolve_rx_module = -> rx_module ?= do ->
+    tap( try require 'r' + 'x' catch e then Rx ) ( m ) ->
+      throw new Error 'Rx-JS not found' unless m?
+
+  from_rx = ( rx_observable ) -> # R(2) expression
+    unless typeof rx_observable.subscribe is 'function'
+      throw new Error 'Not an instance of Rx.Observable'
+    rx_observable.__radioactive_expression ?= do ->
+      npv = new NotifierPoolWithValue
+      npv.set null, new WaitSignal
+      on_next = ( x ) -> npv.set null, x
+      on_err  = ( x ) -> npv.set x, null
+      on_complete =   -> # TODO
+      rx_observable.subscribe on_next, on_err, on_complete
+      -> npv.get()
+
+  to_rx = ( expr ) -> # Rx.Observable
+    expr.__rx_observable ?= do ->
+      resolve_rx_module( ).Observable.create ( observer ) ->
+        radioactive.react expr, (e, r) ->
+          if e? then observer.onError e else observer.onNext r
+
+  expr_roundtrip = ( expr, process_obs ) -> from_rx process_obs to_rx expr
+  obs_roundtrip  = ( obs, process_expr ) -> to_rx process_expr from_rx obs
+
+  ( a, b ) -> switch typeof a + ' ' + typeof b
+    when 'function undefined' then to_rx          a
+    when 'object undefined'   then from_rx        a
+    when 'function function'  then expr_roundtrip a, b
+    when 'object function'    then obs_roundtrip  a, b
+
+
 loop_with_callback = ( expr, cb ) ->
-  stop_flag = false
+  stop = no
   radioactive.react ->
-    radioactive.stop() if stop_flag
-    try
-      cb null, expr()
+    radioactive.stop() if stop
+    try cb null, expr()
     catch e
       throw e if is_special_error e
       cb e
-  -> stop_flag = yes
+  -> stop = yes
 
 
 
 build_public_api = ->
 
-  radioactive = ->
-    a = arguments
-    switch ( typeof a[0] ) + ' ' + ( typeof a[1] )
-      when 'function undefined'
-        radioactive.react a[0]
-      when 'function function'
-        radioactive.react a[0], a[1]
-      else
-        build_cell a[0]
+  radioactive = ( a, b ) -> switch typeof a + ' ' + typeof b
+    when 'function undefined' then radioactive.react a
+    when 'function function'  then radioactive.react a, b
+    else                           build_cell        a
 
   radioactive.cell      = build_cell
 
@@ -450,21 +554,17 @@ build_public_api = ->
 
   radioactive.fork      = fork
 
-  radioactive.mute      = ( expr ) -> -> # expr that is no longer radioactive
-    res = RadioactiveEval.eval expr
+  radioactive.mute      = ( expr ) -> ->
+    res = ReactiveEval.eval expr
     res.monitor?.cancel()
-    if is_special_error res.result.error
-      delete res.result.error
+    delete res.result.error if is_special_error res.result.error
     res.result
 
   # TODO: options
-  radioactive.react = ->
-    a = arguments
-    switch typeof a[0] + ' ' + typeof a[1]
-      when 'function undefined'
-        new ReactiveLoop a[0]
-      when 'function function'
-        loop_with_callback a[0], a[1]
+  radioactive.react = ( a, b ) ->
+    switch typeof a + ' ' + typeof b
+      when 'function undefined' then new ReactiveLoop a
+      when 'function function'  then loop_with_callback a, b
 
   radioactive.once = ( expr ) -> radioactive.react ->
     expr()
@@ -483,10 +583,10 @@ build_public_api = ->
 
   radioactive.syncify = syncify
 
-  radioactive.echo = ( delay = 1000 ) ->
+  radioactive.echo = ( delay_ms = 1000 ) ->
     cells = {}
     ( message ) -> do cells[message] ?= do ->
-        setTimeout ( -> c message  ), delay
+        delay delay_ms, -> c message
         c = build_cell new WaitSignal
 
   radioactive.time = ( interval = 1000 ) ->
@@ -495,6 +595,7 @@ build_public_api = ->
 
   radioactive.WaitSignal = WaitSignal
 
+  radioactive.rx = rxjs
 
   ###
     Exported internals ( for unit testing only )

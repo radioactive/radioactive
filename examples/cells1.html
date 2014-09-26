@@ -1,8 +1,9 @@
+<!doctype html>
 <html>
     <head>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script type="text/javascript" src="../dist/radioactive.js"></script>
-        <script type="text/javascript">
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="../dist/radioactive.js"></script>
+        <script>
 
             // use cells as the basis for a reactive model
             var name_cell     = radioactive.cell('Bob')
@@ -17,7 +18,7 @@
             // we watch the expression for changes
             $(function(){
                 radioactive(function(){
-                  $("#content").text( fullname().toUpperCase() )
+                    $("#content").text( fullname().toUpperCase() )
                 })
             })
 
