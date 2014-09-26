@@ -8,7 +8,7 @@ DEBUG                      = yes
 DEFAULT_LOOP_DELAY         = 50
 LOOP_ITERATIONS_TO_SURVIVE = 2
 
-is_special_error = ( e ) -> ( e instanceof WaitSignal ) or ( e instanceof StopSignal )
+is_special_error = ( e ) -> e instanceof WaitSignal or e instanceof StopSignal
 debug_error      = ( e ) -> console.log e if DEBUG and e? and ! is_special_error e
 
 next_tick        = ( f ) -> setTimeout f, 1
@@ -75,7 +75,7 @@ class BasicEventEmitterHandler
     if type instanceof BasicEventEmitterHandler
       func = type.func
       type = type.type
-    ( @type is type ) and ( @func is func )
+    @type is type and @func is func
 
 
 class StackVal
