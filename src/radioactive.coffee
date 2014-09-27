@@ -435,6 +435,11 @@ class ReactiveEval
   # may return null
   @notifier: -> @stack[@stack.length - 1]?.allocate_notifier()
   @active:   -> @stack.length > 0
+  @mute: ( expr ) -> ->
+    res = ReactiveEval.eval expr
+    res.monitor?.cancel()
+    delete res.result.error if is_special_error res.result.error
+    res.result
   @eval: ( expr ) ->
     rev = new ReactiveEval expr
     @stack.push rev
@@ -554,11 +559,7 @@ build_public_api = ->
 
   radioactive.fork      = fork
 
-  radioactive.mute      = ( expr ) -> ->
-    res = ReactiveEval.eval expr
-    res.monitor?.cancel()
-    delete res.result.error if is_special_error res.result.error
-    res.result
+  radioactive.mute      = ( expr ) -> ReactiveEval.mute expr
 
   # TODO: options
   radioactive.react = ( a, b ) ->
