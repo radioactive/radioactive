@@ -145,6 +145,8 @@ class Monitor extends Base
     @notifiers.push n = new Notifier @
     n
 
+  cancel: -> # TODO
+
   fire: ->
     # IMPORTANT: we never fire in the same "thread"
     # this provides a simple and robust solution for nested notifications and recursion
@@ -480,13 +482,32 @@ build_cell = ( initial_value ) ->
   api
 
 
-
 ###
-  Promises
+  Wraps an expression.
+  After the expression is evaluated.
+  It will remain being re-evaluated in the back until a change is detected
+  When this happens, this function will notify()
 ###
-
-
-
+poll = ( interval, expr ) ->
+  if typeof interval is 'function'
+    expr     = interval
+    interval = 300
+  reval = ( exp ) ->
+    r = ReactiveEval.eval exp
+    r.monitor?.cancel()
+    r.result
+  unless ReactiveEval.active()
+    expr()
+  else
+    notifier = ReactiveEval.notifier()
+    res      = reval expr
+    do iter = -> delay interval, ->
+      if notifier.is_active()
+        if res.equals reval expr
+          iter()
+        else
+          notifier.fire()
+    res.get()
 
 ###
   Integration with Reactive Extensions for Javascript
@@ -560,6 +581,8 @@ build_public_api = ->
   radioactive.fork      = fork
 
   radioactive.mute      = ( expr ) -> ReactiveEval.mute expr
+
+  radioactive.poll      = poll
 
   # TODO: options
   radioactive.react = ( a, b ) ->
