@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+    <script src="../../dist/radioactive.js"></script>
+    <script src="./radioactive-firebase.js"></script>
+    <script>
+
+
+        function getRouteIds(){
+            return Object.keys( new Firebase("https://publicdata-transit.firebaseio.com/sf-muni/routes").get() )
+        }
+
+        function getVehicleIdsForRoute( id ){
+            return Object.keys( new Firebase("https://publicdata-transit.firebaseio.com/sf-muni/routes/" + id ).get() )
+        }
+
+        function getVehicleData( id ){
+            return new Firebase("https://publicdata-transit.firebaseio.com/sf-muni/vehicles/" + id ).get()
+        }
+
+        function getVehicleSpeed( id ){
+            return getVehicleData( id ).speedKmHr
+        }
+
+        function getAverageSpeedForRoute( id ){
+            var speeds = getVehicleIdsForRoute( id)
+                            .map(    function( vehicle_id ){ return getVehicleData( vehicle_id ) } )
+                            .filter( function( data ){ return ( data != null ) && ( typeof data.speedKmHr == "number" ) } )
+                            .map(    function( data ){ return data.speedKmHr } )
+
+            var total = speeds.reduce( function(a, b){ return a + b });
+            return total / speeds.length;
+        }
+
+
+
+        $(function(){
+
+            radioactive.react(function(){
+
+                radioactive.stop();
+
+                console.log('outer loop')
+                var table = $("<table>")
+
+                getRouteIds().forEach( function( route_id ){
+                    var tr = $("<tr>")
+                    table.append( tr )
+                    var td1 = $("<td>").text( route_id )
+                    var td2 = $("<td>")
+
+                    radioactive.react(function(){
+                        console.log('inner loop')
+                        td2.text( getAverageSpeedForRoute( route_id ) )
+                    })
+
+                    tr.append( td1 )
+                    tr.append( td2 )
+                    table.append( tr )
+                })
+
+                $("#content").children().remove()
+                $("#content").append(table)
+
+            })
+        })
+
+    </script>
+</head>
+<body>
+    <div id="content"></div>
+</body>
+</html>
