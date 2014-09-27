@@ -614,7 +614,7 @@ build_public_api = ->
         c = build_cell new WaitSignal
 
   radioactive.time = ( interval = 1000 ) ->
-    setTimeout radioactive.notifier(), interval if interval > 0 && ReactiveEval.active()
+    setTimeout radioactive.notifier(), interval if interval > 0 and ReactiveEval.active()
     new Date().getTime()
 
   radioactive.WaitSignal = WaitSignal
