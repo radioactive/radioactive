@@ -176,7 +176,7 @@ class Try
   get: ->
     throw @error if @error?
     @result
-  compare: ( other, comparator = undefined ) ->
+  equals: ( other, comparator = undefined ) ->
     comparator ?= ( a, b ) -> a is b
     return false unless other instanceof Try
     if other.error? or @error?
@@ -464,7 +464,7 @@ build_cell = ( initial_value ) ->
     value?.get()
   doset = ( v ) ->
     new_t = if v instanceof Error then new Try v else new Try null, v
-    return if new_t.compare value
+    return if new_t.equals value
     value = new_t
     notifiers.fire()
   api = ->
