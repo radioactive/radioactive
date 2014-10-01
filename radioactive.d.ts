@@ -89,27 +89,28 @@ declare module "radioactive" {
 
         function once<T>( expr: () => T, callback: Callback<T> ): Stopper;
 
+        /**
+         * Throws an PendingSignal.
+         * Use this from a data producing expression to indicate
+         * That a value is not defined yet. ( but will be in the future ).
+         */
+        function pending(): void;
 
         /**
-         * Evaluates an expression and returns true if the expression throws a WaitSignal
+         * Evaluates an expression and returns true if the expression throws a PendingSignal
          * false otherwise.
          *
-         * This function is R(1). Once the expression stops "waiting" it will reevaluate itself.
+         * This function is R(1). Once the expression stops being pending it will reevaluate itself.
          * You normally use this to show temporary "loading..." messages while R(2) expressions
-         * are in waiting state.
+         * are in pending state.
          *
          * @param expr
          */
-        function waiting( expr: () => any ): boolean;
+        function pending( expr: () => any ): boolean;
 
-        /**
-         * Throws a WaitSignal.
-         * Use this from a data producing expression to indicate
-         * there is work needed to be done.
-         * Note: It is your responsibility to notify when the work has completed.
-         * You notify by using the traditional radioactive.notifier() workflow.
-         */
-        function wait(): void;
+
+        function pending<T>( expr: () => T, defaultValue: () => T ): T;
+
 
         /**
          * Transforms an async function into a sync function that throws WaitSignals and caches results.

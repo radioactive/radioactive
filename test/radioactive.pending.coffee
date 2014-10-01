@@ -3,13 +3,13 @@ chai        = require 'chai'
 should      = chai.should()
 radioactive = require './radioactive'
 
-describe 'radioactive.wait', ->
+describe 'radioactive.pending()', ->
 
   it 'should interrupt execution within a loop', (done) ->
     count = 0
     radioactive ->
       count++
-      radioactive.wait()
+      radioactive.pending()
       count++
 
     ut.delay 100, ->

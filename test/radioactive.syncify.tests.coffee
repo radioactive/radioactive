@@ -14,12 +14,12 @@ describe 'radioactive.syncify', ->
 
   describe 'should create a service which', ->
 
-    it 'should throw a WaitSignal initially', (done) ->
+    it 'should throw a PendingSignal initially', (done) ->
       uc = radioactive.syncify func: ucasync, global: true
       try
         uc 'Hello'
       catch e
-        if e instanceof radioactive.WaitSignal
+        if e instanceof radioactive.PendingSignal
           done()
         else
           done e
@@ -29,7 +29,7 @@ describe 'radioactive.syncify', ->
 
     it 'should return a value if we give it enough time', (done) ->
       uc = radioactive.syncify func: ucasync, global: true
-      try # it will throw a WaitSignal the first time
+      try # it will throw a PendingSignal the first time
         uc 'Hello'
       ut.delay 30, ->
         uc('Hello').should.equal 'HELLO'

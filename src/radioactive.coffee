@@ -6,7 +6,7 @@ DEBUG                      = yes
 DEFAULT_LOOP_DELAY         = 50
 LOOP_ITERATIONS_TO_SURVIVE = 2
 
-is_special_error = ( e ) -> e instanceof WaitSignal or e instanceof StopSignal
+is_special_error = ( e ) -> e instanceof PendingSignal or e instanceof StopSignal
 debug_error      = ( e ) -> console.log e if DEBUG and e? and ! is_special_error e
 
 next_tick        = ( f ) -> setTimeout f, 1
@@ -17,8 +17,8 @@ delay            = -> setTimeout arguments[1], arguments[0]
 EQUALS           = (a, b) -> a is b
 
 
-class WaitSignal extends Error
-  constructor: -> super "WaitSignal"
+class PendingSignal extends Error
+  constructor: -> super "PendingSignal"
 
 class StopSignal extends Error
   constructor: -> super()
@@ -227,8 +227,8 @@ class Iterator extends Base
     else
       false
 
-  current:    -> if @waiting() then Try.null else @last_token.result
-  waiting:    -> @last_token.result.error instanceof WaitSignal
+  current:    -> if @pending() then Try.null else @last_token.result
+  pending:    -> @last_token.result.error instanceof PendingSignal
   expireable: -> if @last_token? then @last_token.monitor? else true
 
   close: ->
@@ -251,7 +251,7 @@ class Iterator extends Base
     tap( prm.run stream ) ( t ) -> t.partial = prm.marked
 
   invalidate_service_caches: ( stream ) => => tap( stream() ) ( t ) =>
-    @cache = {} unless t.partial or t.result.error instanceof WaitSignal
+    @cache = {} unless t.partial or t.result.error instanceof PendingSignal
 
   update_counters: ( stream ) => => tap( stream() ) => @iteration_count++
   add_to_stack:    ( stream ) => => Iterator.stack.run stream, => @
@@ -343,7 +343,7 @@ class CellBasedCacheEntry
     @opts.producer ?= throw new Error 'producer is required'
     @opts.equals   ?= EQUALS
     @opts.poll     ?= 0
-    @cell = build_cell new WaitSignal
+    @cell = build_cell new PendingSignal
   get: ->
   reset: ->
 
@@ -365,7 +365,7 @@ syncify = ( opts ) ->
           throw new Error 'Wrong number of arguments for syncified function ' + opts.func.toString()
         key = opts.hasher args
         do cells[ key ] ?= do ->
-          c = build_cell new WaitSignal
+          c = build_cell new PendingSignal
           c.___args = args
           if opts.ttl isnt 0 then c.___timeout = delay opts.ttl, -> reset_cell key
           opts.func.apply null, args.concat [c]
@@ -396,21 +396,21 @@ syncify = ( opts ) ->
 
 
 fork = ->
-  waits    = 0
+  pending  = 0
   monitors = []
   api = ( expr ) ->
     res = ReactiveEval.eval expr
-    if res.result.error instanceof WaitSignal
+    if res.result.error instanceof PendingSignal
       unless res.monitor?
-        throw new Error 'You cannot throw a WaitSignal from a non reactive function - it will never resolve'
-      waits++
+        throw new Error 'You cannot throw a PendingSignal from a non reactive function - it will never resolve'
+      pending++
       monitors.push res.monitor
       null
     else
       res.unbox()
   api.join = ->
     Monitor.join monitors
-    if waits > 0 then throw new WaitSignal
+    if pending > 0 then throw new PendingSignal
     undefined
   api
 
@@ -526,7 +526,7 @@ rxjs = do ->
       throw new Error 'Not an instance of Rx.Observable'
     rx_observable.__radioactive_expression ?= do ->
       npv = new NotifierPoolWithValue
-      npv.set new WaitSignal
+      npv.set new PendingSignal
       on_next = ( x ) -> npv.set null, x
       on_err  = ( x ) -> npv.set x, null
       on_complete =   -> # TODO
@@ -560,6 +560,17 @@ loop_with_callback = ( expr, cb ) ->
   -> stop = yes
 
 
+is_pending = ( expr ) ->
+  try
+    expr()
+    false
+  catch e
+  if e instanceof PendingSignal
+    PartialResultMarker.mark()
+    true
+  else
+    false
+
 
 build_public_api = ->
 
@@ -573,8 +584,6 @@ build_public_api = ->
   radioactive.active    = -> ReactiveEval.active()
 
   radioactive.notifier  = -> ReactiveEval.notifier()?.public_api()
-
-  radioactive.wait      = -> throw new WaitSignal
 
   radioactive.stop      = -> throw new StopSignal
 
@@ -594,16 +603,15 @@ build_public_api = ->
     expr()
     radioactive.stop()
 
-  radioactive.waiting = ( expr ) -> # : Boolean
-    try
-      expr()
-      false
-    catch e
-      if e instanceof WaitSignal
-        PartialResultMarker.mark()
-        true
-      else
-        false
+  radioactive.pending = ( expr, defv ) ->
+    switch arguments.length
+      when 0 then throw new PendingSignal
+      when 1 then is_pending expr
+      when 2
+        if is_pending expr
+          if typeof defv is 'function' then defv() else defv
+        else
+          expr()
 
   radioactive.syncify = syncify
 
@@ -611,13 +619,13 @@ build_public_api = ->
     cells = {}
     ( message ) -> do cells[message] ?= do ->
         delay delay_ms, -> c message
-        c = build_cell new WaitSignal
+        c = build_cell new PendingSignal
 
   radioactive.time = ( interval = 1000 ) ->
     setTimeout radioactive.notifier(), interval if interval > 0 and ReactiveEval.active()
     new Date().getTime()
 
-  radioactive.WaitSignal = WaitSignal
+  radioactive.PendingSignal = PendingSignal
 
   radioactive.rx = rxjs
 

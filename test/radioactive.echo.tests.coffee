@@ -9,7 +9,7 @@ describe 'radioactive.echo', ->
     should.exist echo
     echo.should.be.a 'function'
   describe 'the returned function', ->
-    it 'should throw a WaitSignal', ->
+    it 'should throw a PendingSignal', ->
       echo = radioactive.echo()
       echo.should.throw()
     it 'should echo after a while', (done) ->

@@ -49,8 +49,8 @@
 
                 radioactive(function(){
 
-                    var v1 = radioactive.waiting( value1 ) ? "( write more than 3 letters on the first box )" : value1();
-                    var v2 = radioactive.waiting( value2 ) ? "( write something on the second box )" : value2();
+                    var v1 = radioactive.pending( value1, "( write more than 3 letters on the first box )" );
+                    var v2 = radioactive.pending( value2, "( write something on the second box )" );
 
                     var text = "1: " + v1 + ", 2: " + v2
                     $('#output').text( text.toUpperCase() )
