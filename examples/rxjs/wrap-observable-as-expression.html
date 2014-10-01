@@ -10,31 +10,58 @@
              * feature rich reactive extensions for javascript.
              * https://github.com/Reactive-Extensions/RxJS
              *
-             * We are creating an Rx.Observable instance and exposing it
-             * as a radioactive expression.
+             * Rx.Observables provide a great abstraction for dealing with streams.
+             * But then fall short when all you want to do is, for example, combine the values
+             * of two different streams or apply simple transformations.
+             *
+             * Working with radioactive expressions makes this much more intuitive
+             * ( you treat the streams as regular expressions/functions ).
+             *
+             * Notice how easily we concatenate values coming from two streams
+             * and then apply a .toUpperCase() transformation ( map over the stream ).
+             *
+             * This duality ( streams as expressions ) is the cornerstone of radioactive.
+             *
+             * Radioactive provides a way to deal with reactive streams of data using
+             * pure javascript expressions.
+             *
              */
 
             $(function(){
-                var $input  = $('#input')
-                var $output = $('#output')
-                var getInputValue = radioactive.rx(
+
+                var value1 = radioactive.rx(
                         Rx.Observable
-                            .fromEvent( $input, 'keyup' )
+                            .fromEvent( $('#input1'), 'keyup' )
                             .map(function (e) { return e.target.value })
                             .filter(function (text) { return text.length > 2 })
                             .throttle(300)
                             .distinctUntilChanged()
                         )
 
+                var value2 = radioactive.rx(
+                        Rx.Observable
+                                .fromEvent( $('#input2'), 'keyup' )
+                                .map(function (e) { return e.target.value })
+                                .filter(function (text) { return text.length })
+                                .throttle(100)
+                                .distinctUntilChanged()
+                )
+
                 radioactive(function(){
-                    $output.text( getInputValue().toUpperCase() )
+
+                    var v1 = radioactive.waiting( value1 ) ? "( write more than 3 letters on the first box )" : value1();
+                    var v2 = radioactive.waiting( value2 ) ? "( write something on the second box )" : value2();
+
+                    var text = "1: " + v1 + ", 2: " + v2
+                    $('#output').text( text.toUpperCase() )
                 })
             })
 
         </script>
     </head>
     <body>
-        <input type="text" id="input"/>
+        <input type="text" id="input1"/>
+        <input type="text" id="input2"/>
         <p id="output"></p>
     </body>
 </html>
