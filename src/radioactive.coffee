@@ -526,7 +526,7 @@ rxjs = do ->
       throw new Error 'Not an instance of Rx.Observable'
     rx_observable.__radioactive_expression ?= do ->
       npv = new NotifierPoolWithValue
-      npv.set null, new WaitSignal
+      npv.set new WaitSignal
       on_next = ( x ) -> npv.set null, x
       on_err  = ( x ) -> npv.set x, null
       on_complete =   -> # TODO
