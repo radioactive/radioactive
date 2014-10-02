@@ -37,33 +37,22 @@
 
 
         $(function(){
-
             radioactive.react(function(){
-
-                radioactive.stop();
-
-                console.log('outer loop')
                 var table = $("<table>")
-
                 getRouteIds().forEach( function( route_id ){
                     var tr = $("<tr>")
                     table.append( tr )
                     var td1 = $("<td>").text( route_id )
                     var td2 = $("<td>")
-
                     radioactive.react(function(){
-                        console.log('inner loop')
                         td2.text( getAverageSpeedForRoute( route_id ) )
                     })
-
                     tr.append( td1 )
                     tr.append( td2 )
                     table.append( tr )
                 })
-
                 $("#content").children().remove()
                 $("#content").append(table)
-
             })
         })
 
