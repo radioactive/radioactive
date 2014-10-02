@@ -661,7 +661,7 @@ do conditional_build = ->
   create = false
   if ( other = GLOBAL.radioactive )?
     other_version = other.version or '0.0.0'
-    if ( compare_semver( VERSION, other_version) is 'GT' )
+    if compare_semver( VERSION, other_version ) is 'GT'
       create = yes
   else
     create = yes
