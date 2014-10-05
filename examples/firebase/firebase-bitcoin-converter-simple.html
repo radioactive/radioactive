@@ -25,7 +25,7 @@
         var bitcoin  = new Firebase("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
 
         $(function(){
-            radioactive(function(){
+            radioactive.react(function(){
                 $("#content").text( "1 BTC = " + ( bitcoin.get() * rate("EUR")) + " EUR" );
             })
         })

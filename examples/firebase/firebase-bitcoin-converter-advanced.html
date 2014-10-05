@@ -38,7 +38,7 @@
         // UI
         $(function(){
 
-            radioactive(function(){
+            radioactive.react(function(){
                 var c = currencies()
                 var select = $("<select>").on("change", function(){
                     selectedCurrency(select.val())
@@ -53,7 +53,7 @@
                 $("body").append( select )
             })
 
-            radioactive(function(){
+            radioactive.react(function(){
                 if ( radioactive.pending( content ) ){
                     $("#content").text( "loading..." );
                 } else {
