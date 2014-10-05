@@ -54,7 +54,7 @@
             })
 
             radioactive(function(){
-                if ( radioactive.waiting( content ) ){
+                if ( radioactive.pending( content ) ){
                     $("#content").text( "loading..." );
                 } else {
                     $("#content").text( content() );
