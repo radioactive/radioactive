@@ -1,4 +1,4 @@
-Radioactive is a library that allows you to work with reactive, non-reactive, sync and async data sources as simple Javascript Expressions.
+Radioactive is a Javascript library that allows you to work with reactive, non-reactive, sync and async data sources as simple Javascript Expressions.
 
 ## The simple explanation:
 
