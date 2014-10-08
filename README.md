@@ -26,7 +26,7 @@ reactivity.react(function(){
 })
 ```
 
-The getTime() function is a `reactive expression`. It returns a value just like a regular function, but it also emits an event whenever its value changes. The reactivity.react() function knows how to listen for these events and as soon as they occurr it will re-evaluate whatever it contains.
+The getTime() function is a `radioactive expression`. It returns a value just like a regular function, but it also emits an event whenever its value changes. The `radioactive.react()` function knows how to listen for these events and as soon as they occurr it will re-evaluate whatever it contains.
 
 In order for this to work, the `getTime()` function must `notify` that its value has changed.
 
@@ -34,85 +34,38 @@ In order for this to work, the `getTime()` function must `notify` that its value
 
 # Overview
 
-In a very basic sense, Reactivity hast two parts:
+In a very basic sense, Radioactive hast two parts:
 
-* Publish ( use reactivity.notifier() )
-* Consumer ( use reactivity.react() )
+* Publish ( use `radioactive.notifier()` )
+* Consumer ( use `radioactive.react()` )
 
-We say that a function is reactive if it can notify us when its value has changed.
-( somebody was kind enough to create a reactivity.notifier() under the covers )
-
-OK. You're probably thinking: "Why go through all this if I could probably write somehing like that myself".
-Well, there are several things that reactivity.js gives you that would be really hard to implement yourself:
-
-* 100% transparent transitivity ( aka dependency tracking, dataflow, etc )
-* Transparent interoperation with other reactive libraries. For example:
- * [Syncify](https://github.com/aldonline/syncify): A clever way to get rid of callbacks / asynchronicity
- * [Reactive Router](https://github.com/aldonline/reactive_router)
-
-### Transitivity
-
-Reactivity is transitive. This means that any function consuming a reactive function becomes
-reactive itself. For example:
-
-```javascript
-
-function getTimeWithMessage(){
-  return "The current time is :" + getTime()
-}
-
-
-reactivity.subscribe( getTimeWithMessage, function( err, res ){
-  $('p').text( res )
-})
-
-
-```
-
-Or even
-
-
-```javascript
-
-function getTimeWithMessage(){
-  return "The current time is :" + getTime()
-}
-
-function getTimeWithMessageUC(){
-  return getTimeWithMessage().toUpperCase()
-}
-
-reactivity.subscribe( getTimeWithMessageUC, function( err, res ){
-  $('p').text( res )
-})
-
-
-```
+We say that a function is radioactive if it can notify us when its value has changed.
+( somebody was kind enough to create a radioactive.notifier() under the covers )
 
 # Installation
 
 ## NPM
 
 ```shell
-npm install reactivity
+npm install radioactive
 ```
 
 ```javascript
-var reactivity = require('reactivity')
+var radioactive = require('radioactive')
 ```
 
 ## Browser
 
-Include the following JS file ( you can find it in /build/... )
+Include the following JS file ( you can find it in /dist/... )
 
 ```html
-<script src="reactivity.min.js"></script>
+<script src="radioactive.min.js"></script>
 ```
 
-In the browser, the global reactivity object is attached to the root scope ( window )
+In the browser, the global `radioactive` object is attached to the root scope ( window )
 
 ```javascript
-var reactivity = window.reactivity
+var radioactive = window.radioactive
 ```
 
 If the object is already present then the library won't mess things up.
