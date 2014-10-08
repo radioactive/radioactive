@@ -2,7 +2,6 @@ Radioactive is a Javascript library that allows you to work with reactive, non-r
 
 * [github.com/radioactive](https://github.com/radioactive)
 * Stack Overflow Tag: `[radioactive]`
-* Meetup.com ( TODO )
 
 
 ## The simple explanation:
