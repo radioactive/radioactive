@@ -51,7 +51,7 @@ We say that a function is radioactive if it can notify us when its value has cha
 
 ## NPM
 
-```shell
+```bash
 npm install radioactive
 ```
 
@@ -64,6 +64,14 @@ radioactive.react(function(){
 ```
 
 ## Browser
+
+### Using Bower
+
+```bash
+bower install radioactive
+```
+
+### Manually
 
 Include the following JS file ( you can find it in /dist/... )
 
