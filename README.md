@@ -1,14 +1,19 @@
 Radioactive is a Javascript library that allows you to work with reactive, non-reactive, sync and async data sources as simple Javascript Expressions.
 
+* [github.com/radioactive](https://github.com/radioactive)
+* Stack Overflow Tag: `[radioactive]`
+* Meetup.com ( TODO )
+
+
 ## The simple explanation:
 
-* Radioactive allows you to create special ( reactive ) javascript functions that auto-update when their value changes. It is highly convenient and transparent. There is no need to configure anything. Most people use it to bind data to a UI, for example. 
-* Radioactive knows how to deal with asynchronous code so that you don't have to worry about callbacks.
+* Radioactive allows you work with javascript functions that auto-update when their value changes. Most people use it to bind data to a UI, for example. 
+* Radioactive also knows how to deal with asynchronous without using callbacks. This allows you to mix and match data coming from any source.
 
 ## A more advanced explanation
 
 `reactivity.js` is a cannonical implementation of the [Native Reactivity](https://github.com/aldonline/reactivity/wiki/Native-Reactivity) pattern. It exposes reactive streams of data as pure javascript expressions.
-Additionally, in order to reconcile sync and async datasources, `reactivity.js` integrates [Forced Execution Suspension](https://github.com/aldonline/reactivity/wiki/Forced-Execution-Suspension) and [Stateful Service Lifecycle Management](https://github.com/aldonline/reactivity/wiki/Stateful-Service-Lifecycle-Management).
+Additionally, in order to reconcile sync and async datasources, radioactive integrates [Forced Execution Suspension](https://github.com/aldonline/reactivity/wiki/Forced-Execution-Suspension) and [Stateful Service Lifecycle Management](https://github.com/aldonline/reactivity/wiki/Stateful-Service-Lifecycle-Management).
 The end result is a pure javascript environment where you can transparently mix and match expressions that are reactive, non-reactive, synchronous or asynchronous!
 
 You can essentially represent ANY expression that returns data as a reactive expression.
