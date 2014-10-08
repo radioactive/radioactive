@@ -52,6 +52,10 @@ npm install radioactive
 
 ```javascript
 var radioactive = require('radioactive')
+
+radioactive.react(function(){
+  console.log( radioactive.time() );
+})
 ```
 
 ## Browser
@@ -66,6 +70,10 @@ In the browser, the global `radioactive` object is attached to the root scope ( 
 
 ```javascript
 var radioactive = window.radioactive
+
+radioactive.react(function(){
+  console.log( radioactive.time() );
+})
 ```
 
 If the object is already present then the library won't mess things up.
