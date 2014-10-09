@@ -1,4 +1,5 @@
-Radioactive makes working with data easier in Javascript. It unifies different types of datasources and exposes them as simple javascript functions. You can forget about events and callbacks and write vanilla Javascript code. If data changes, locally or on the server, everything is updated automatically.
+Radioactive makes working with data easier in Javascript. It unifies different types of datasources and exposes them as simple javascript functions.
+It implements a couple of neat tricks that allow you to forget about events and callbacks and write vanilla Javascript code. If data changes, locally or on the server, everything is updated automatically.
 
 * If you want to learn more about the project and our mission, read this introductory blog post.
 * If you want to use radioactive, just keep on reading
