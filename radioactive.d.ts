@@ -14,11 +14,14 @@ declare module "radioactive" {
 
     /**
      * Proxies to react() when called with one argument of type function
+     * @param expr Radioactive Javascript function
      */
     function r( expr: () => any ) : r.Stopper;
 
     /**
      * Proxies to react( expr, callback )
+     * @param expr Radioactive Javascript function
+     * @param callback Node.js style callback
      */
     function r<T>( expr: () => T, callback: Callback<T> ) : r.Stopper;
 
@@ -26,7 +29,7 @@ declare module "radioactive" {
     //////////// radioactive() --> radioactive.cell()
 
     /**
-     * Returns a cell initialized to undefined
+     * Returns a cell initialized to 'undefined'
      */
     function r(): r.Cell<any>;
 
@@ -44,7 +47,10 @@ declare module "radioactive" {
         /**
          * Returns true if we are currently within a reactive loop.
          * ( we are inside a call to radioactive.react() or radioactive.once() ).
+         * This is useful when implementing Publishers.
          *
+         * @see https://github.com/radioactive/radioactive/wiki/Publishing-Data
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.active
          */
         function active(): boolean;
 
@@ -52,12 +58,26 @@ declare module "radioactive" {
          * Request a Notifier.
          * This method may return null or undefined if we are not running within a reactive context.
          * In other words: if radioactive.active() == false then this method will return null
+         *
+         * @see https://github.com/radioactive/radioactive/wiki/Publishing-Data
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.notifier
          */
         function notifier(): Notifier;
 
         /**
-         * Returns a forker.
+         * Alternate way of requesting a Notifier.
+         * If you don't want to check for null you can pass a callback.
+         * This callback will only be called radioactive.active() == true.
+         * @param callback Function that takes a Notifier as its first ( and only ) argument
+         */
+        function notifier( callback: ( notifier: Notifier ) => void ): void;
+
+
+        /**
+         * Returns a Forker instance.
+         * You can use this Forker to fork/join your code.
          *
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.fork
          * @see https://github.com/radioactive/radioactive/blob/master/test/radioactive.fork.tests.coffee
          *
          */
@@ -65,19 +85,23 @@ declare module "radioactive" {
 
         /**
          * Creates a Cell initialized to undefined
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.cell
          */
         function cell<T>(): Cell<T>;
 
         /**
-         * Creates a cell initialized to @value
+         * Creates a cell initialized to value
+         * @param value The initial value for this cell
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.cell
          */
         function cell<T>( value:T ): Cell<T>;
 
 
         /**
-         * Throws a StopSignal.
-         * Use this to terminate a reactive loop.
+         * Throws a StopSignal
+         * Will stop the closest enclosing radioactive.react() loop.
          *
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.stop
          * @see https://github.com/radioactive/radioactive/blob/master/test/radioactive.stop.tests.coffee
          */
         function stop(): void;
@@ -118,7 +142,8 @@ declare module "radioactive" {
          *
          * function( error, result ){}
          *
-         * @param async
+         * @param async An async function. It's last argument must be a Node.js style callback.
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.syncify
          */
         function syncify( async: Function ): Function;
 
