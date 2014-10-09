@@ -40,7 +40,7 @@ radioactive.react(function(){
 * [github.com/radioactive](https://github.com/radioactive)
 * [Google Groups: radioactivejs](https://groups.google.com/forum/#!forum/radioactivejs)
 * [Stack Overflow Tag: `[radioactive]`]()
-
+* [radioactive modules and integrations](https://github.com/radioactive/radioactive/wiki/Modules)
 
 
 
