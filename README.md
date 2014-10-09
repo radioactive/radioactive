@@ -1,28 +1,44 @@
 Radioactive makes working with data easier in Javascript. It unifies different types of datasources and exposes them as simple javascript expressions. You can forget about events and callbacks and write vanilla Javascript code. If data changes, locally or on the server, everything is updated automatically.
 
-You can use Radioactive today to improve your apps.
+Using radioactive is simple.
+
+# Quickstart
+
+```bash
+npm install radioactive
+```
+
+```javascript
+var radioactive = require('radioactive')
+
+radioactive.react(function(){
+  console.log( radioactive.time() );
+})
+```
+
+You can also install it using bower.
+
+```bash
+bower install radioactive
+```
+
+Radioactive exposes one global object called `radioactive`.
+
+```javascript
+
+radioactive.react(function(){
+  console.log( radioactive.time() );
+})
+```
+
+# Community
 
 * [github.com/radioactive](https://github.com/radioactive)
 * Stack Overflow Tag: `[radioactive]`
 
 
-## The simple explanation:
 
-* Radioactive allows you work with javascript functions that auto-update when their value changes. Most people use it to bind data to a UI, for example. 
-* Radioactive also knows how to deal with asynchronous without using callbacks. This allows you to mix and match data coming from any source.
-
-## A more advanced explanation
-
-`reactivity.js` is a cannonical implementation of the [Native Reactivity](https://github.com/aldonline/reactivity/wiki/Native-Reactivity) pattern. It exposes reactive streams of data as pure javascript expressions.
-Additionally, in order to reconcile sync and async datasources, radioactive integrates [Forced Execution Suspension](https://github.com/aldonline/reactivity/wiki/Forced-Execution-Suspension) and [Stateful Service Lifecycle Management](https://github.com/aldonline/reactivity/wiki/Stateful-Service-Lifecycle-Management).
-The end result is a pure javascript environment where you can transparently mix and match expressions that are reactive, non-reactive, synchronous or asynchronous!
-
-You can essentially represent ANY expression that returns data as a reactive expression.
-
-No more [DonkeyScript](https://www.donkeyscript.org/)!
-
-
-## Can you show me some examples?
+# Can you show me some examples?
 
 Sure. Here's an example that will print out the time every second:
 
@@ -95,3 +111,16 @@ It will proxy calls to the pre-existing implementation.
 
 
 ![Radioactive JS](https://dl.dropboxusercontent.com/u/497895/radioactivejs.org/radioactive-js-logo.png "Radioactive JS")
+
+
+
+# For geeks:
+
+radioactive implements the [Native Reactivity](https://github.com/aldonline/reactivity/wiki/Native-Reactivity) pattern. It exposes reactive streams of data as pure javascript expressions.
+Additionally, in order to reconcile sync and async datasources, radioactive integrates [Forced Execution Suspension](https://github.com/aldonline/reactivity/wiki/Forced-Execution-Suspension) and [Stateful Service Lifecycle Management](https://github.com/aldonline/reactivity/wiki/Stateful-Service-Lifecycle-Management).
+The end result is a pure javascript environment where you can transparently mix and match expressions that are reactive, non-reactive, synchronous or asynchronous!
+
+You can essentially represent ANY expression that returns data as a reactive expression.
+
+No more [DonkeyScript](https://www.donkeyscript.org/)!
+
