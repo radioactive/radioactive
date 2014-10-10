@@ -1291,9 +1291,16 @@
     radioactive.active = function() {
       return ReactiveEval.active();
     };
-    radioactive.notifier = function() {
-      var _ref;
-      return (_ref = ReactiveEval.notifier()) != null ? _ref.public_api() : void 0;
+    radioactive.notifier = function(callback) {
+      var n, _ref;
+      n = (_ref = ReactiveEval.notifier()) != null ? _ref.public_api() : void 0;
+      if (callback != null) {
+        if (n != null) {
+          return callback(n);
+        }
+      } else {
+        return n;
+      }
     };
     radioactive.stop = function() {
       throw new StopSignal;
