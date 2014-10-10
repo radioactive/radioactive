@@ -1,5 +1,6 @@
-Radioactive makes working with data easier in Javascript. It unifies different types of datasources and exposes them as simple javascript functions.
-It implements a couple of neat tricks that allow you to forget about events and callbacks and write vanilla Javascript code. If data changes, locally or on the server, everything is updated automatically.
+Radioactive is a Javascript API that unifies different types of datasources ( sync, async and streaming ) and exposes them as regular Javascript functions inside a reactive context.
+
+You can write complex data processing and transformation code without using callbacks, listening for events or manually coordinating how the different services work. From your point of view, every service is represented by a synchronous Javascript function. Radioactive takes care of managing the complexity behind the curtains: If data changes, locally or on the server, everything will be updated automatically.
 
 * If you want to learn more about the project and our mission, read this introductory blog post.
 * If you want to use radioactive, just keep on reading
