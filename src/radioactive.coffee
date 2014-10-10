@@ -583,7 +583,12 @@ build_public_api = ->
 
   radioactive.active    = -> ReactiveEval.active()
 
-  radioactive.notifier  = -> ReactiveEval.notifier()?.public_api()
+  radioactive.notifier  = ( callback ) ->
+    n = ReactiveEval.notifier()?.public_api()
+    if callback?
+      callback n if n?
+    else
+      n
 
   radioactive.stop      = -> throw new StopSignal
 
