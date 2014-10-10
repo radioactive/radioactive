@@ -13,7 +13,7 @@ describe 'radioactive.notifier()', ->
       else
         done new Error 'no notifier'
 
-describe.only 'radioactive.notifier(callback)', ->
+describe 'radioactive.notifier(callback)', ->
   it 'should not call the callback when called from outside a reactive context', ->
     called = no
     radioactive.notifier -> called = yes
