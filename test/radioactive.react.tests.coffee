@@ -41,7 +41,7 @@ describe 'radioactive.react', ->
         counter.should.equal 1 # no increment
         done()
 
-  it 'run more than once if expression is reactive and notifies()', (done) ->
+  it 'should run more than once if expression is reactive and notifies()', (done) ->
     helper = build_helper()
     counter = 0
     radioactive ->
