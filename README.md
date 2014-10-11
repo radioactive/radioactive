@@ -1,4 +1,4 @@
-Radioactive is a Javascript API that unifies different types of datasources ( sync, async, promises and streaming ) and exposes them as regular Javascript functions inside a reactive context.
+Radioactive is a Javascript API that unifies different types of datasources ( sync, async, streaming ) and exposes them as regular Javascript functions inside a reactive context.
 
 You can write complex data processing and transformation code without using callbacks, listening for events or manually coordinating how the different services work. From your point of view, every service is represented by a synchronous Javascript function.
 
