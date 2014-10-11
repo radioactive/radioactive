@@ -96,6 +96,31 @@ declare module "radioactive" {
          */
         function cell<T>( value:T ): Cell<T>;
 
+        /**
+         * Creates a cell initialized to value
+         * @param value The initial value for this cell
+         * @see https://github.com/radioactive/radioactive/wiki/radioactive.cell
+         */
+        function cell<T>( value:T, options: CellOptions ): Cell<T>;
+
+
+        interface CellOptions {
+            /**
+             * Pass a custom function to test for equality.
+             * A cell's value is only changed if the new value is different from its current value.
+             * @param a
+             * @param b
+             */
+            comparator?: ( a: any, b: any ) => boolean ;
+
+            /**
+             *
+             */
+            throttle?: number ;
+        }
+
+
+
 
         /**
          * Throws a StopSignal

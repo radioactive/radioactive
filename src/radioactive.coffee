@@ -457,28 +457,44 @@ class ReactiveEvalResult
     @result.get()
 
 
-build_cell = ( initial_value ) ->
-  # TODO: options. comparator
-  value         = undefined
-  notifiers     = new NotifierPool
+build_cell = ( initial_value, opts = {} ) ->
+
+  opts.comparator  ?= EQUALS
+  opts.throttle    ?= 0
+
+  value            = undefined
+  notifiers        = new NotifierPool
+  throttle_timeout = undefined
+
   doget = ->
     notifiers.allocate()
     value?.get()
+
+  doset_throttled = ( v ) ->
+    if opts.throttle is 0
+      doset v
+    else
+      if throttle_timeout
+        clearTimeout throttle_timeout
+        throttle_timeout = undefined
+      throttle_timeout = delay opts.throttle, -> doset v
+
   doset = ( v ) ->
     new_t = if v instanceof Error then new Try v else new Try null, v
-    return if new_t.equals value
+    return if new_t.equals value, opts.comparator
     value = new_t
     notifiers.fire()
+
   api = ->
     a = arguments
     switch a.length
       when 0 then doget()
-      when 1 then doset a[0]
-      when 2 then doset a[0] or a[1]
+      when 1 then doset_throttled a[0]
+      when 2 then doset_throttled a[0] or a[1]
   api.get = -> api()
   api.set = ( v ) -> api v
   api.monitored = -> notifiers.is_active()
-  if initial_value? then api initial_value
+  if initial_value? then doset initial_value
   api
 
 

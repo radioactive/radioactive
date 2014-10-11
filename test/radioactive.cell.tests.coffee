@@ -1,6 +1,7 @@
 chai    = require 'chai'
 should  = chai.should()
 X       = require './radioactive'
+ut      = require 'ut'
 
 describe 'a cell', ->
   c1 = X()
@@ -56,3 +57,35 @@ describe 'a cell', ->
     c = X 'a'
     c.should.be.a 'function'
     c().should.equal 'a'
+
+describe 'a cell with a custom comparator', ->
+  it 'should use it to determine whether a change has occurred or not', ->
+    c = X.cell 'a', comparator: ( a, b ) -> a.toLowerCase() is b.toLowerCase()
+    c().should.equal 'a'
+    c 'b'
+    c().should.equal 'b'
+    c 'B'
+    c().should.equal 'b'
+
+describe 'a throttled cell', ->
+  it 'should throttle its set() operation', ( done ) ->
+    c = X.cell 'a', throttle: 100
+    c().should.equal 'a'
+    c 'b'
+    c().should.equal 'a'
+    ut.delay 200, ->
+      c().should.equal 'b'
+      done()
+
+  it 'should throttle its set() operation 2', ( done ) ->
+    c = X.cell 'a', throttle: 100
+    c().should.equal 'a'
+    c 'b'
+    c().should.equal 'a'
+    ut.delay 50, ->
+      c 'a'
+      c().should.equal 'a'
+      ut.delay 200, ->
+        c 'a'
+        c().should.equal 'a'
+        done()
