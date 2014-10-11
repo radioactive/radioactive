@@ -491,8 +491,7 @@ build_cell = ( initial_value, opts = {} ) ->
       when 0 then doget()
       when 1 then doset_throttled a[0]
       when 2 then doset_throttled a[0] or a[1]
-  api.get = -> api()
-  api.set = ( v ) -> api v
+
   api.monitored = -> notifiers.is_active()
   if initial_value? then doset initial_value
   api

@@ -1070,18 +1070,41 @@
 
   })();
 
-  build_cell = function(initial_value) {
-    var api, doget, doset, notifiers, value;
+  build_cell = function(initial_value, opts) {
+    var api, doget, doset, doset_throttled, notifiers, throttle_timeout, value;
+    if (opts == null) {
+      opts = {};
+    }
+    if (opts.comparator == null) {
+      opts.comparator = EQUALS;
+    }
+    if (opts.throttle == null) {
+      opts.throttle = 0;
+    }
     value = void 0;
     notifiers = new NotifierPool;
+    throttle_timeout = void 0;
     doget = function() {
       notifiers.allocate();
       return value != null ? value.get() : void 0;
     };
+    doset_throttled = function(v) {
+      if (opts.throttle === 0) {
+        return doset(v);
+      } else {
+        if (throttle_timeout) {
+          clearTimeout(throttle_timeout);
+          throttle_timeout = void 0;
+        }
+        return throttle_timeout = delay(opts.throttle, function() {
+          return doset(v);
+        });
+      }
+    };
     doset = function(v) {
       var new_t;
       new_t = v instanceof Error ? new Try(v) : new Try(null, v);
-      if (new_t.equals(value)) {
+      if (new_t.equals(value, opts.comparator)) {
         return;
       }
       value = new_t;
@@ -1094,22 +1117,16 @@
         case 0:
           return doget();
         case 1:
-          return doset(a[0]);
+          return doset_throttled(a[0]);
         case 2:
-          return doset(a[0] || a[1]);
+          return doset_throttled(a[0] || a[1]);
       }
-    };
-    api.get = function() {
-      return api();
-    };
-    api.set = function(v) {
-      return api(v);
     };
     api.monitored = function() {
       return notifiers.is_active();
     };
     if (initial_value != null) {
-      api(initial_value);
+      doset(initial_value);
     }
     return api;
   };

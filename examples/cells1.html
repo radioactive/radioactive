@@ -12,7 +12,7 @@
             // you can combine cells in any way you want
             // notice that you can use cell() or cell.get() to access the current value
             function fullname(){
-                return name_cell() + ' ' + lastname_cell.get()
+                return name_cell() + ' ' + lastname_cell()
             }
 
             // we watch the expression for changes
@@ -25,7 +25,7 @@
             // update the cells in 3 seconds
             setTimeout(function(){
                 name_cell('Jason')
-                lastname_cell.set('Mraz')
+                lastname_cell('Mraz')
             }, 3000)
 
         </script>
