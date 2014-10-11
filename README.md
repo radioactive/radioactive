@@ -6,7 +6,7 @@ Radioactive takes care of managing the complexity behind the curtains: If data c
 
 # Getting Started
 
-[The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Tutorial)
+[The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial)
 
 
 # Community
