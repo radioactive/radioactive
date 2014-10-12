@@ -234,12 +234,8 @@ declare module "radioactive" {
          *
          */
         interface Notifier {
-            /**
-             * Shortcut for fire()
-             */
             (): void
             cancel(): void
-            fire(): void
         }
 
 

@@ -97,6 +97,7 @@ class Notifier extends Base
   fire:                 -> @monitor.fire @
   cancel:               -> # TODO
   is_active:            -> yes # TODO: states
+  # Expose a minimal interface. See typescript definition file.
   public_api:           ->
     api      = => @fire()
     api.once = ( h ) => @once h
