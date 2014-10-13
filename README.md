@@ -20,6 +20,7 @@ Depending on where you come from, there are many ways to describe Radioactive.
 * An environment where reactive data streams can be treated as first-class Javascript functions.
 * A type of data binding solution that isn’t tied to one specific UI framework.
 * A minimal API which allows data producers and data consumers built by different teams to interoperate seamlessly and transparently.
+* A special kind of async flow control library
 * An effort to fix a long standing problem at the level where it should be solved ( at the language core ), once and for all, so we can stop reinventing the wheel and focus on the next set of problems.
 
 Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
