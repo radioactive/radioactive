@@ -313,44 +313,6 @@ class ReactiveLoop extends Base
   @stack: new StackVal
 
 
-
-class CellBasedCache
-
-  constructor: ( @opts = {} ) ->
-    @opts.hasher   ?= JSON.stringify
-    # whether to poll active cells for new values, and how frequently to do it
-    @opts.poll     ?= 0
-    # time before purging inactive cells
-    @opts.ttl      ?= 0
-    # comparator for cell values
-    @opts.equals   ?= EQUALS
-    # async function that produces the value
-    @opts.producer ?= throw new Error 'producer is required'
-    @_entries = {}
-
-  get: ( key ) ->
-    hash = @opts.hasher key
-    @_entries[hash] ?= do =>
-      entry = new CellBasedCacheEntry
-        producer: (cb) => @opts.producer key, cb
-        poll:     @opts.poll
-        equals:   @opts.equals
-      entry.___key = key
-      entry
-
-  reset: ( filter ) ->
-
-
-class CellBasedCacheEntry
-  constructor: ( @opts = {} ) ->
-    @opts.producer ?= throw new Error 'producer is required'
-    @opts.equals   ?= EQUALS
-    @opts.poll     ?= 0
-    @cell = build_cell new PendingSignal
-  get: ->
-  reset: ->
-
-
 syncify = ( opts ) ->
   opts = func: opts if typeof opts is 'function'
   opts.global ?= no
