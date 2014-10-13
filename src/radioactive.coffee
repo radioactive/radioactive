@@ -519,7 +519,7 @@ radioactive_data = do ->
     a = arguments
     switch typeof a[0]
       when 'string'
-        if a[0].indexOf 'firebaseio.com'
+        if -1 isnt a[0].indexOf 'firebaseio.com'
           get_firebase a[0]
         else
           get_json a[0], a[1]

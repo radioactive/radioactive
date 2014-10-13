@@ -1148,7 +1148,7 @@
       a = arguments;
       switch (typeof a[0]) {
         case 'string':
-          if (a[0].indexOf('firebaseio.com')) {
+          if (-1 !== a[0].indexOf('firebaseio.com')) {
             return get_firebase(a[0]);
           } else {
             return get_json(a[0], a[1]);
