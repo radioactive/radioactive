@@ -1,16 +1,58 @@
 Radioactive small layer on top of Javascript that lets you treat all sorts of different datasources as if they were simple functions.
 It doesn't matter if your data comes from remote AJAX calls, from a Firebase stream, or if it represents the changing value of a Text Input. From your point of view: **Everything is a Function**.
 
-Once you can see all of your datasources as functions you are free to write complex data processing and transformation code without using callbacks, listening for events or manually coordinating how the different services work.
-
-Radioactive takes care of managing the complexity behind the curtains:
-
-* If the data is async, it waits for it to arrive
-* If data changes, locally or on the server, everything will be updated automatically
+Once you can see all of your datasources as functions you are free to write complex data processing and transformation code without using callbacks, listening for events or manually coordinating how the different services work. If data changes, locally or on the server, everything will be updated automatically
 
 # Getting Started
 
-[The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial)
+## Install
+
+```bash
+$ bower install radioactive
+```
+
+```bash
+$ npm install radioactive
+```
+
+## 5 Minute Tour
+
+The following snippet shows how easy it is to work with an Ajax datasource, Two Firebase streams and a stream of data from an HTML text input.
+Notice that we are not using any callbacks or listening to any events.
+Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
+
+```javascript
+Ra.react(function(){
+  var email      = Ra.data("#some-email-input");
+  var user       = Ra.data("http://api.someservice/search-user.json?email=" + email);
+  var name       = Ra.data("http://xxx.firebaseio.com/user/" + user.id + "/name");
+  var lastname   = Ra.data("http://xxx.firebaseio.com/user/" + user.id + "/lastname");
+  $("#output").text( "Hello " + name + " " + lastname )
+})
+```
+
+And the same example but with a few refactorings:
+
+```javascript
+function email2id( email ){
+  return Ra.data("http://api.someservice/search-user.json?email=" + email).id
+}
+
+function id2fullname( id ){
+  var base = "http://xxx.firebaseio.com/user/" + id ;
+  return Ra.data( base + "/name") + " " +  Ra.data( base + "/lastname") 
+}
+
+Ra.react(function(){
+  $("#output").text( "Hello " + id2fullname( email2id( Ra.data("#some-email-input")  ) ) )
+})
+```
+
+The previous example should illustrate how easy you can abstract yourself from "where the data comes from" and "how often it changes".
+
+[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. 
+
+Time to read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
 
 # What is Radioactive, again?
 
