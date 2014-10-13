@@ -17,7 +17,7 @@ $ npm install radioactive
 
 ## 5 Minute Tour
 
-The following snippet shows how easy it is to work with an Ajax datasource, a Firebase streams and a stream of data from an HTML text input.
+The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
 Notice that we are not using any callbacks or listening to any events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
@@ -34,7 +34,7 @@ You can see how easy you can abstract yourself from "where the data comes from" 
 
 The beauty of this approach is this abstraction is that you can easily refactor your code into modular functions. You then "assemble" the final expression inside the radioactive.react() loop.
 
-This leads to purely functional, highly scalable and mantainable code.
+This leads to purely functional, highly scalable and mantainable code. You can easily unit test your app or replace parts of your code with mock datasources. Here's how a more modularized version of the previous code might look like:
 
 
 ```javascript
