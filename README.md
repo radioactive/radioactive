@@ -22,7 +22,7 @@ Depending on where you come from, there are many ways to describe Radioactive.
 * A minimal API which allows data producers and data consumers built by different teams to interoperate seamlessly and transparently.
 * An effort to fix a long standing problem at the level where it should be solved ( at the language core ), once and for all, so we can stop reinventing the wheel and focus on the next set of problems.
 
-Next generation UI frameworks can leverate Radiaoctive as their data-binding layer.
+Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
 Data source publishers can use Radioactive to make their offerings more powerful.
 
 This is an API that the browser has been crying for for a long time.
