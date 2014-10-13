@@ -505,11 +505,24 @@ radioactive_data = do ->
   # TODO: AJAX JSON options
   get_json = ( url, opts ) -> json_service() url
   # public API
+
+  firebase_cache = {}
+  get_firebase = ( url ) ->
+    do firebase_cache[url] ?= do ->
+      unless Firebase? then throw new Error 'cannot find Firebase client library'
+      ref  = new Firebase url
+      cell = build_cell new PendingSignal
+      ref.on 'value', ( snap ) -> cell snap.val()
+      cell
+
   ->
     a = arguments
     switch typeof a[0]
       when 'string'
-        get_json a[0], a[1]
+        if a[0].indexOf 'firebaseio.com'
+          get_firebase a[0]
+        else
+          get_json a[0], a[1]
       else
         throw new Error "Unknown datasource. Check #{WIKI_URL}/radioactive.data for a list of built-in datasources"
 

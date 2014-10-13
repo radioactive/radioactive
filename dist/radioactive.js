@@ -1101,7 +1101,7 @@
   };
 
   radioactive_data = (function() {
-    var get_json, json_service;
+    var firebase_cache, get_firebase, get_json, json_service;
     json_service = (function() {
       var cached;
       cached = void 0;
@@ -1128,12 +1128,32 @@
     get_json = function(url, opts) {
       return json_service()(url);
     };
+    firebase_cache = {};
+    get_firebase = function(url) {
+      return (firebase_cache[url] != null ? firebase_cache[url] : firebase_cache[url] = (function() {
+        var cell, ref;
+        if (typeof Firebase === "undefined" || Firebase === null) {
+          throw new Error('cannot find Firebase client library');
+        }
+        ref = new Firebase(url);
+        cell = build_cell(new PendingSignal);
+        ref.on('value', function(snap) {
+          return cell(snap.val());
+        });
+        return cell;
+      })())();
+    };
     return function() {
       var a;
       a = arguments;
       switch (typeof a[0]) {
         case 'string':
-          return get_json(a[0], a[1]);
+          if (a[0].indexOf('firebaseio.com')) {
+            return get_firebase(a[0]);
+          } else {
+            return get_json(a[0], a[1]);
+          }
+          break;
         default:
           throw new Error("Unknown datasource. Check " + WIKI_URL + "/radioactive.data for a list of built-in datasources");
       }

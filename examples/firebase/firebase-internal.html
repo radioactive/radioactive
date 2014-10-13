@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script>
+
+            $(function(){
+                radioactive(function(){
+                    var name     = radioactive.data("https://d88d9s8.firebaseio.com/name");
+                    var lastname = radioactive.data("https://d88d9s8.firebaseio.com/lastname");
+                    $("#content").text( name + " " + lastname )
+                })
+            })
+
+        </script>
+    </head>
+    <body>
+        <p id="content"></p>
+    </body>
+</html>
