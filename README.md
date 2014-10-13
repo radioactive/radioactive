@@ -17,40 +17,45 @@ $ npm install radioactive
 
 ## 5 Minute Tour
 
-The following snippet shows how easy it is to work with an Ajax datasource, Two Firebase streams and a stream of data from an HTML text input.
+The following snippet shows how easy it is to work with an Ajax datasource, a Firebase streams and a stream of data from an HTML text input.
 Notice that we are not using any callbacks or listening to any events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
 ```javascript
 Ra.react(function(){
-  var email      = Ra.data("#some-email-input");
-  var user       = Ra.data("http://api.someservice/search-user.json?email=" + email);
-  var name       = Ra.data("http://xxx.firebaseio.com/user/" + user.id + "/name");
-  var lastname   = Ra.data("http://xxx.firebaseio.com/user/" + user.id + "/lastname");
-  $("#output").text( "Hello " + name + " " + lastname )
+  var currency   = Ra.data("#currency-selector-input");
+  var rates      = Ra.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
+  var bitcoin    = Ra.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+  $("#output").text( "1 BTC =  " + currency + " " + bitcoin * rates[currency] );
 })
 ```
 
-And the same example but with a few refactorings:
+You can see how easy you can abstract yourself from "where the data comes from" and "how often it changes". The reactive loop does all the heavy lifting for you.
+
+The beauty of this approach is this abstraction is that you can easily refactor your code into modular functions. You then "assemble" the final expression inside the radioactive.react() loop.
+
+This leads to purely functional, highly scalable and mantainable code.
+
 
 ```javascript
-function email2id( email ){
-  return Ra.data("http://api.someservice/search-user.json?email=" + email).id
+function getRate( currency ){
+  return Ra.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?").rates[currency];
 }
-
-function id2fullname( id ){
-  var base = "http://xxx.firebaseio.com/user/" + id ;
-  return Ra.data( base + "/name") + " " +  Ra.data( base + "/lastname") 
+function getSelectedCurrency(){
+  return Ra.data("#currency-selector-input");
+}
+function getLatestBitcoinValue(){
+  return Ra.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
 }
 
 Ra.react(function(){
-  $("#output").text( "Hello " + id2fullname( email2id( Ra.data("#some-email-input")  ) ) )
+  $("#output").text( "1 BTC =  " + currency + " " + getLatestBitcoinValue() * getRate( currency ) );
 })
 ```
 
-The previous example should illustrate how easy you can abstract yourself from "where the data comes from" and "how often it changes".
+You can find this example on the `/examples` folder.
 
-[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. 
+[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or async services. [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
 Time to read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
 
