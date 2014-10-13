@@ -223,7 +223,7 @@ class Iterator extends Base
       t = @expr()
       @monitor_listener.swap t.monitor
       @last_token = t
-      debug_error t.result.error
+      debug_error t.result?.result?.error
       true
     else
       false
