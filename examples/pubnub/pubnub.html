@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://cdn.pubnub.com/pubnub.min.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script>
+
+            $(function(){
+
+                var pubnub = PUBNUB.init({
+                    publish_key:   'demo',
+                    subscribe_key: 'demo'
+                });
+
+                pubnub.time(
+                        function(time){
+                            console.log(time)
+                        }
+                );
+
+                pubnub.subscribe({
+                    channel: 'my_channel',
+                    message: function(m){console.log(m)}
+                });
+
+
+                pubnub.here_now({
+                    channel : 'my_channel',
+                    callback : function(m){console.log(m)}
+                });
+
+                radioactive(function(){
+
+                })
+
+            })
+
+        </script>
+    </head>
+    <body>
+        <p id="content"></p>
+    </body>
+</html>

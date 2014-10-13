@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="../../dist/radioactive.js"></script>
+    <script>
+
+        /**
+         * This example shows you how you can use radioactive.syncify to transform any async function
+         * into a reactive service that you can then use inside the radioactive.react loop.
+         *
+         * In this case we are creating a JSONP service that leverages jQuery ajax under the covers.
+         * Note: You could use radioactive.data for such a simple JSON request.
+         *
+         * https://github.com/radioactive/radioactive/wiki/radioactive.syncify
+         * https://github.com/radioactive/radioactive/wiki/radioactive.data
+         *
+         */
+
+        var OPENEXCHANGERATES_APP_ID = '4a363014b909486b8f49d967b810a6c3'
+
+        var jsonp = radioactive.syncify( function( url, cb ){
+            $.ajax({ dataType: "json", url: url, success: function(data){ cb( null, data )} });
+        })
+
+        $(function(){
+            radioactive.react(function(){
+                var result = jsonp('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?')
+                $("#content").text( "EUR = " + result.rates.EUR );
+            })
+        })
+
+    </script>
+</head>
+<body>
+<p id="content"></p>
+</body>
+</html>

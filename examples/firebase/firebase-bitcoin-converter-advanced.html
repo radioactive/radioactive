@@ -11,15 +11,8 @@
 
         // This example shows how easy it is to combine multiple async services
         // even when one of them is reactive
-
-        // first. lets create a syncified jsonp service on top of jQuery ajax
-        var jsonp = radioactive.syncify( function( url, cb ){
-            $.ajax({ dataType: "json", url: url, success: function(data){ cb( null, data )} });
-        })
-
-        // on top of our syncified service we build two more
-        function rate( code ){ return jsonp('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?').rates[code] }
-        function currencies(){ return jsonp('https://openexchangerates.org/api/currencies.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?') }
+        function rate( code ){ return radioactive.data('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?').rates[code] }
+        function currencies(){ return radioactive.data('https://openexchangerates.org/api/currencies.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?') }
 
         // lets get the exchange rate for bitcoin in real time from firebase
         // https://www.firebase.com/docs/open-data/cryptocurrencies.html
