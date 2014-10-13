@@ -230,6 +230,15 @@ declare module "radioactive" {
          */
         function mute<T>( expr: () => T ): () => T
 
+
+        function data( jsonURL: string, opts?: DataAjaxOpts ): any
+
+
+        interface DataAjaxOpts {
+            poll?: number
+        }
+
+
         /**
          *
          */

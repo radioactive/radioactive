@@ -2,6 +2,8 @@ VERSION = '1.0.0'
 
 serial = do -> ii = 0 ; -> ii++
 
+
+WIKI_URL                   = 'https://github.com/radioactive/radioactive/wiki'
 DEBUG                      = yes
 DEFAULT_LOOP_DELAY         = 50
 LOOP_ITERATIONS_TO_SURVIVE = 2
@@ -525,6 +527,30 @@ poll = ( interval, expr ) ->
           notifier.fire()
     res.get()
 
+
+radioactive_data = do ->
+  json_service = do ->
+    cached = undefined
+    ->
+      cached ?= do ->
+        unless jQuery? then throw new Error 'radioactive.data depends on jQuery to issue Ajax calls'
+        syncify ( url, cb ) ->
+          jQuery.ajax
+            dataType: "json"
+            url:      url
+            success:  ( data )      -> cb null, data
+            error:    ( x, y, err ) -> cb err
+  # TODO: AJAX JSON options
+  get_json = ( url, opts ) -> json_service() url
+  # public API
+  ->
+    a = arguments
+    switch typeof a[0]
+      when 'string'
+        get_json a[0], a[1]
+      else
+        throw new Error "Unknown datasource. Check #{WIKI_URL}/radioactive.data for a list of built-in datasources"
+
 ###
   Integration with Reactive Extensions for Javascript
   https://github.com/Reactive-Extensions
@@ -594,6 +620,8 @@ build_public_api = ->
     when 'function undefined' then radioactive.react a
     when 'function function'  then radioactive.react a, b
     else                           build_cell        a
+
+  radioactive.data      = radioactive_data
 
   radioactive.cell      = build_cell
 
