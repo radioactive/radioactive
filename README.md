@@ -22,10 +22,10 @@ Notice that we are not using any callbacks or listening to any events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
 ```javascript
-R.react(function(){
-  var currency   = R.data("#currency-selector-input");
-  var rates      = R.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
-  var bitcoin    = R.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+radioactive.react(function(){
+  var currency   = radioactive.data("#currency-selector-input");
+  var rates      = radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
+  var bitcoin    = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
   $("#output").text( "1 BTC =  " + currency + " " + bitcoin * rates[currency] );
 })
 ```
@@ -39,16 +39,16 @@ This leads to purely functional, highly scalable and mantainable code. You can e
 
 ```javascript
 function getRate( currency ){
-  return R.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?").rates[currency];
+  return radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?").rates[currency];
 }
 function getSelectedCurrency(){
-  return R.data("#currency-selector-input");
+  return radioactive.data("#currency-selector-input");
 }
 function getLatestBitcoinValue(){
-  return R.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+  return radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
 }
 
-R.react(function(){
+radioactive.react(function(){
   $("#output").text( "1 BTC =  " + currency + " " + getLatestBitcoinValue() * getRate( currency ) );
 })
 ```
