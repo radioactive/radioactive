@@ -515,14 +515,32 @@ radioactive_data = do ->
       ref.on 'value', ( snap ) -> cell snap.val()
       cell
 
+  get_html_elm_val = ( $elm ) ->
+    unless jQuery? then throw new Error 'radioactive.data requires jQuery to issue read HTML UI Element values'
+    $elm.val()
+    key = 'radioactive-cell'
+    unless ( c = $elm.data key )?
+      $elm.data key, c = build_cell $elm.val()
+      switch $elm[0].tagName
+        when 'INPUT'
+          $elm.on 'keyup', -> c $elm.val()
+        when 'SELECT'
+          $elm.on 'change', -> c $elm.val()
+    c()
+
   ->
     a = arguments
     switch typeof a[0]
       when 'string'
-        if -1 isnt a[0].indexOf 'firebaseio.com'
+        if a[0][0] in ['.', '#'] # selectors
+          get_html_elm_val $(a[0])
+        else if -1 isnt a[0].indexOf 'firebaseio.com'
           get_firebase a[0]
         else
           get_json a[0], a[1]
+      when 'object'
+        if $(a)[0].ownerDocument?
+          get_html_elm_val $(a[0])
       else
         throw new Error "Unknown datasource. Check #{WIKI_URL}/radioactive.data for a list of built-in datasources"
 
@@ -689,7 +707,7 @@ do conditional_build = ->
       create = yes
   else
     create = yes
-  if create then GLOBAL.radioactive = build_public_api()
+  if create then GLOBAL.radioactive = GLOBAL.Ra = build_public_api()
 
 try
   module.exports = GLOBAL.radioactive

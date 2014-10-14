@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script>
+            $(function(){
+
+                radioactive.react(function(){
+                    $('#output1').text( radioactive.data("#input1") )
+                    $('#output2').text( radioactive.data("#input2") )
+                })
+            })
+        </script>
+    </head>
+    <body>
+
+        <input id="input1" type="text"/>
+        <p id="output1"></p>
+        <hr/>
+
+        <select id="input2">
+            <option value="a">a</option>
+            <option value="b">b</option>
+            <option value="c">c</option>
+        </select>
+        <p id="output2"></p>
+        <hr/>
+
+    </body>
+</html>
