@@ -80,8 +80,8 @@ This is an API that the browser has been crying for for a long time.
 
 * [github.com/radioactive](https://github.com/radioactive)
 * [Google Groups: radioactivejs](https://groups.google.com/forum/#!forum/radioactivejs)
+* [meetup.com/radioactive](https://www.meetup.com/radioactive/)
 * [Stack Overflow Tag: `[radioactive]`]()
 * [radioactive modules and integrations](https://github.com/radioactive/radioactive/wiki/Modules)
-
 
 
