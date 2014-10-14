@@ -495,7 +495,7 @@ radioactive_data = do ->
     cached = undefined
     ->
       cached ?= do ->
-        unless jQuery? then throw new Error 'radioactive.data depends on jQuery to issue Ajax calls'
+        unless jQuery? then throw new Error 'radioactive.data requires jQuery to issue Ajax calls'
         syncify ( url, cb ) ->
           jQuery.ajax
             dataType: "json"
