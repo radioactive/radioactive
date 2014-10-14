@@ -7,10 +7,10 @@
         <script>
 
             $(function(){
+                var name     = radioactive.data("https://d88d9s8.firebaseio.com/name");
+                var lastname = radioactive.data("https://d88d9s8.firebaseio.com/lastname");
                 radioactive(function(){
-                    var name     = radioactive.data("https://d88d9s8.firebaseio.com/name");
-                    var lastname = radioactive.data("https://d88d9s8.firebaseio.com/lastname");
-                    $("#content").text( name + " " + lastname )
+                    $("#content").text( name() + " " + lastname() )
                 })
             })
 

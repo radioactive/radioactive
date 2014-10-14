@@ -5,27 +5,20 @@
         <script src="../../dist/radioactive.js"></script>
         <script>
             $(function(){
-
+                var input1 = radioactive.data("#input1")
+                var input2 = radioactive.data("#input2")
                 radioactive.react(function(){
-                    $('#output1').text( radioactive.data("#input1")() )
-                    $('#output2').text( radioactive.data("#input2")() )
+                    input1( input2() )
                 })
             })
         </script>
     </head>
     <body>
-
         <input id="input1" type="text"/>
-        <p id="output1"></p>
-        <hr/>
-
         <select id="input2">
             <option value="a">a</option>
             <option value="b">b</option>
             <option value="c">c</option>
         </select>
-        <p id="output2"></p>
-        <hr/>
-
     </body>
 </html>

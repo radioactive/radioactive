@@ -1101,14 +1101,14 @@
   };
 
   radioactive_data = (function() {
-    var firebase_cache, get_firebase, get_json, json_service;
+    var firebase_cache, get_firebase, get_html_elm_val, get_json, json_service;
     json_service = (function() {
       var cached;
       cached = void 0;
       return function() {
         return cached != null ? cached : cached = (function() {
           if (typeof jQuery === "undefined" || jQuery === null) {
-            throw new Error('radioactive.data depends on jQuery to issue Ajax calls');
+            throw new Error('radioactive.data requires jQuery to issue Ajax calls');
           }
           return syncify(function(url, cb) {
             return jQuery.ajax({
@@ -1126,11 +1126,13 @@
       };
     })();
     get_json = function(url, opts) {
-      return json_service()(url);
+      return function() {
+        return json_service()(url);
+      };
     };
     firebase_cache = {};
     get_firebase = function(url) {
-      return (firebase_cache[url] != null ? firebase_cache[url] : firebase_cache[url] = (function() {
+      return firebase_cache[url] != null ? firebase_cache[url] : firebase_cache[url] = (function() {
         var cell, ref;
         if (typeof Firebase === "undefined" || Firebase === null) {
           throw new Error('cannot find Firebase client library');
@@ -1140,18 +1142,60 @@
         ref.on('value', function(snap) {
           return cell(snap.val());
         });
-        return cell;
-      })())();
+        return function() {
+          if (arguments.length === 0) {
+            return cell();
+          } else {
+            return ref.update(arguments[1]);
+          }
+        };
+      })();
+    };
+    get_html_elm_val = function($elm) {
+      var c, key;
+      if (typeof jQuery === "undefined" || jQuery === null) {
+        throw new Error('radioactive.data requires jQuery to issue read HTML UI Element values');
+      }
+      $elm.val();
+      key = 'radioactive-cell';
+      if ((c = $elm.data(key)) == null) {
+        $elm.data(key, c = build_cell($elm.val()));
+        switch ($elm[0].tagName) {
+          case 'INPUT':
+            $elm.on('keyup', function() {
+              return c($elm.val());
+            });
+            break;
+          case 'SELECT':
+            $elm.on('change', function() {
+              return c($elm.val());
+            });
+        }
+      }
+      return function() {
+        if (arguments.length === 0) {
+          return c();
+        } else {
+          return $elm.val(arguments[0]);
+        }
+      };
     };
     return function() {
-      var a;
+      var a, _ref;
       a = arguments;
       switch (typeof a[0]) {
         case 'string':
-          if (-1 !== a[0].indexOf('firebaseio.com')) {
+          if ((_ref = a[0][0]) === '.' || _ref === '#') {
+            return get_html_elm_val($(a[0]));
+          } else if (-1 !== a[0].indexOf('firebaseio.com')) {
             return get_firebase(a[0]);
           } else {
             return get_json(a[0], a[1]);
+          }
+          break;
+        case 'object':
+          if ($(a)[0].ownerDocument != null) {
+            return get_html_elm_val($(a[0]));
           }
           break;
         default:
@@ -1458,7 +1502,7 @@
       create = true;
     }
     if (create) {
-      return GLOBAL.radioactive = build_public_api();
+      return GLOBAL.radioactive = GLOBAL.Ra = build_public_api();
     }
   })();
 

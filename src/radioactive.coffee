@@ -503,17 +503,21 @@ radioactive_data = do ->
             success:  ( data )      -> cb null, data
             error:    ( x, y, err ) -> cb err
   # TODO: AJAX JSON options
-  get_json = ( url, opts ) -> json_service() url
+  get_json = ( url, opts ) -> -> json_service() url
   # public API
 
   firebase_cache = {}
   get_firebase = ( url ) ->
-    do firebase_cache[url] ?= do ->
+    firebase_cache[url] ?= do ->
       unless Firebase? then throw new Error 'cannot find Firebase client library'
       ref  = new Firebase url
       cell = build_cell new PendingSignal
       ref.on 'value', ( snap ) -> cell snap.val()
-      cell
+      ->
+        if arguments.length is 0
+          cell()
+        else
+          ref.update arguments[1]
 
   get_html_elm_val = ( $elm ) ->
     unless jQuery? then throw new Error 'radioactive.data requires jQuery to issue read HTML UI Element values'
@@ -526,7 +530,11 @@ radioactive_data = do ->
           $elm.on 'keyup', -> c $elm.val()
         when 'SELECT'
           $elm.on 'change', -> c $elm.val()
-    c()
+    ->
+      if arguments.length is 0
+        c()
+      else
+        $elm.val arguments[0]
 
   ->
     a = arguments

@@ -8,9 +8,12 @@
         var OPENEXCHANGERATES_APP_ID = '4a363014b909486b8f49d967b810a6c3'
 
         $(function(){
+
+            var rates = radioactive.data('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?');
+
             radioactive.react(function(){
-                var result = radioactive.data('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?')
-                $("#content").text( "EUR = " + result.rates.EUR );
+
+                $("#content").text( "EUR = " + rates().rates.EUR );
             })
         })
 

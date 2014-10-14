@@ -11,20 +11,20 @@
 
         // This example shows how easy it is to combine multiple async services
         // even when one of them is reactive
-        function rate( code ){ return radioactive.data('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?').rates[code] }
-        function currencies(){ return radioactive.data('https://openexchangerates.org/api/currencies.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?') }
+        function rate( code ){ return radioactive.data('https://openexchangerates.org/api/latest.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?')().rates[code] }
+        function currencies(){ return radioactive.data('https://openexchangerates.org/api/currencies.json?app_id=' + OPENEXCHANGERATES_APP_ID + '&callback=?')() }
 
         // lets get the exchange rate for bitcoin in real time from firebase
         // https://www.firebase.com/docs/open-data/cryptocurrencies.html
-        var bitcoin  = new Firebase("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+        var bitcoinLast  = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last")
 
         // the state of the app
         var defaultCurrency  = "USD"
-        var selectedCurrency = radioactive( defaultCurrency )
+        var selectedCurrency = radioactive.cell( defaultCurrency )
 
 
         function content(){
-            return "1 BTC = " + ( bitcoin.get() * rate(selectedCurrency())) + " " + selectedCurrency()
+            return "1 BTC = " + ( bitcoinLast() * rate(selectedCurrency())) + " " + selectedCurrency()
         }
 
 
