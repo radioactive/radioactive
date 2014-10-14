@@ -78,7 +78,7 @@ Data source publishers can use Radioactive to provide a more user-friendly API.
 
 * [github.com/radioactive](https://github.com/radioactive)
 * [Google Groups: radioactivejs](https://groups.google.com/forum/#!forum/radioactivejs)
-* [meetup.com/radioactive](https://www.meetup.com/radioactive/)
+* [meetup.com/radioactive](http://www.meetup.com/radioactive/)
 * [Stack Overflow Tag: `[radioactive]`]()
 * [radioactive modules and integrations](https://github.com/radioactive/radioactive/wiki/Modules)
 
