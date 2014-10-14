@@ -6,7 +6,7 @@
   "scripts": {
     "test": "make test",
     "watch": "./node_modules/coffee-script/bin/coffee -cw -o ./dist ./src",
-    "build": "./node_modules/coffee-script/bin/coffee -c -o ./dist ./src",
+    "build": "sh ./build.sh",
     "clean": "rm dist/*.js",
     "prepublish": "npm run build"
   },
@@ -18,7 +18,8 @@
     "mocha": "~1.21.4",
     "chai": "~1.9.1",
     "ut": "0.0.1",
-    "rx": "~2.3.11"
+    "rx": "~2.3.11",
+    "uglify-js": "~2.4.15"
   },
   "repository": {
     "type": "git",
