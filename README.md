@@ -1,6 +1,8 @@
+<img src="https://raw.github.com/radioactive/radioactive/master/logo.png" align="right" width="300px" />
+
 Radioactive is a **Native** FRP ( Functional Reactive Programming ) environment for Javascript.
 
-By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive figure out how and when to deal with **Remote Data Access** and **Change Propagation**.
+By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive deal with **Async Data Access** and **Automatic Change Propagation**.
 
 Within Radioactive everything becomes a function:
 
@@ -8,22 +10,10 @@ Within Radioactive everything becomes a function:
 * Data Streams ( ex: Firebase )
 * Static and Mutable data
 
-# Getting Started
-
-## Install
-
-```bash
-$ bower install radioactive
-```
-
-```bash
-$ npm install radioactive
-```
-
 ## Example
 
 The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
-Notice that we are not using any callbacks or listening to any events.
+Notice that there are no callbacks or events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
 ```javascript
@@ -63,9 +53,24 @@ radioactive.react(function(){
 
 You can find more examples on the [/examples](https://github.com/radioactive/radioactive/tree/master/examples) folder.
 
-[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or async services. [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
+[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or [async services](https://github.com/radioactive/radioactive/wiki/radioactive.syncify). [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
-Time to read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
+
+# Getting Started
+
+We suggest you read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
+
+But if you are in a hurry:
+
+## Install
+
+```bash
+$ bower install radioactive
+```
+
+```bash
+$ npm install radioactive
+```
 
 # What is Radioactive, again?
 
@@ -80,6 +85,16 @@ Depending on where you come from, there are many ways to describe Radioactive.
 
 Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
 Data source publishers can use Radioactive to provide a more user-friendly API.
+
+# How does Radioactive Compare to X?
+
+
+* Bacon.js, Rx.js and similar FRP libraries
+ * Radioactive focuses on *Native* integration with Javascript
+ * Radioactive interoperates with RxJs ( see [radioactive.rx](https://github.com/radioactive/radioactive/wiki/radioactive.rx) ) 
+* UI Frameworks like Angular.js, Knockout, etc 
+ *  Radioactive is not a UI framework
+ *  TODO: more on this
 
 
 # Community
