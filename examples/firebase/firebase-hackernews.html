@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="https://cdn.firebase.com/js/client/1.0.18/firebase.js"></script>
+        <script src="../../dist/radioactive.js"></script>
+        <script>
+
+            $(function(){
+
+                function toJson( obj ){ return JSON.stringify( obj, null, 2 ) }
+                function item( id ){ return radioactive.data("https://hacker-news.firebaseio.com/v0/item/" + id )() }
+                function topstories( ){ return radioactive.data("https://hacker-news.firebaseio.com/v0/topstories")() }
+
+                // print the full content of the first 10 top stories
+                radioactive.react( function(){
+                    $("#content").text( toJson( topstories( ).slice( 0, 10 ).map( item ) ) )
+                })
+            })
+
+        </script>
+    </head>
+    <body>
+        <pre id="content"></pre>
+    </body>
+</html>
