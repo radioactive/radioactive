@@ -53,7 +53,7 @@ radioactive.react(function(){
 
 You can find more examples on the [/examples](https://github.com/radioactive/radioactive/tree/master/examples) folder.
 
-[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or async services. [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
+[radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or [async services](https://github.com/radioactive/radioactive/wiki/radioactive.syncify). [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
 
 # Getting Started
