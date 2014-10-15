@@ -83,7 +83,7 @@ Depending on where you come from, there are many ways to describe Radioactive.
 * A special kind of async flow control library
 * An effort to fix a long standing problem at the level where it should be solved ( at the language core ), once and for all, so we can stop reinventing the wheel and focus on the next set of problems.
 
-Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
+Next generation UI frameworks can leverage Radioactive as their data-binding layer.
 Data source publishers can use Radioactive to provide a more user-friendly API.
 
 # How does Radioactive Compare to X?
