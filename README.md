@@ -86,6 +86,16 @@ Depending on where you come from, there are many ways to describe Radioactive.
 Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
 Data source publishers can use Radioactive to provide a more user-friendly API.
 
+# How does Radioactive Compare to X?
+
+
+* Bacon.js, Rx.js and similar FRP libraries
+ * Radioactive focuses on *Native* integration with Javascript
+ * Radioactive interoperates with RxJs ( see [radioactive.rx](https://github.com/radioactive/radioactive/wiki/radioactive.rx) ) 
+* UI Frameworks like Angular.js, Knockout, etc 
+ *  Radioactive is not a UI framework
+ *  TODO: more on this
+
 
 # Community
 
