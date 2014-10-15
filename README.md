@@ -10,22 +10,10 @@ Within Radioactive everything becomes a function:
 * Data Streams ( ex: Firebase )
 * Static and Mutable data
 
-# Getting Started
-
-## Install
-
-```bash
-$ bower install radioactive
-```
-
-```bash
-$ npm install radioactive
-```
-
 ## Example
 
 The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
-Notice that we are not using any callbacks or listening to any events.
+Notice that there are no callbacks or events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
 ```javascript
@@ -67,7 +55,22 @@ You can find more examples on the [/examples](https://github.com/radioactive/rad
 
 [radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or async services. [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
-Time to read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
+
+# Getting Started
+
+We suggest you read [The Radioactive Tutorial](https://github.com/radioactive/radioactive/wiki/Radioactive-Tutorial).
+
+But if you are in a hurry:
+
+## Install
+
+```bash
+$ bower install radioactive
+```
+
+```bash
+$ npm install radioactive
+```
 
 # What is Radioactive, again?
 
