@@ -2,7 +2,7 @@
 
 Radioactive is a **Native** FRP ( Functional Reactive Programming ) environment for Javascript.
 
-By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive figure out how and when to deal with **Remote Data Access** and **Change Propagation**.
+By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive deal with **Async Data Access** and **Automatic Change Propagation**.
 
 Within Radioactive everything becomes a function:
 
