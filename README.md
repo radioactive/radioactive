@@ -12,9 +12,10 @@ Within Radioactive everything becomes a function:
 
 ## Example
 
-The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
-Notice that there are no callbacks or events.
-Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
+The following snippet shows how easy it is to work with an **Ajax Datasource**, a **Firebase stream** and a **stream of data from an HTML text input**.
+Notice that, even though they are completely different in nature, they can all be treated like normal functions and there are no callbacks or events.
+
+And this completely reactive of course: If data changes the text value of `#output` will be updated accordingly.
 
 ```javascript
 
