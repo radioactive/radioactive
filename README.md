@@ -40,20 +40,17 @@ radioactive.react(function(){
 })
 ```
 
-You can see how easy you can abstract yourself from "where the data comes from" and "how often it changes". The reactive loop does all the heavy lifting for you.
-
-The beauty of working with functions is that you can easily refactor and modularize your code. You then "assemble" the final expression you want to work with inside the radioactive.react() loop.
+You can completely abstract yourself from "where the data comes from" and "how often it changes" and let [radioactive.react](https://github.com/radioactive/radioactive/wiki/radioactive.react) do all the heavy lifting for you.
 
 This leads to purely functional, highly scalable and mantainable code. You can easily unit test your app or replace parts of your code with mock datasources. Here's how a more modularized version of the previous code might look like:
-
-
-For example, let's refactor this a bit
 
 ```javascript
 var rates      = radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
 var currency   = radioactive.data("#currency-selector-input");
 var bitcoin    = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
 
+// notice that this function is wrapping an Ajax call and a Firebase stream
+// but you can completely abstact yourself from that fact
 function getCurrentBitcoinValue( curr ){
   return bitcoin() * rates().rates[curr];
 }
