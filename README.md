@@ -1,7 +1,12 @@
-Radioactive small layer on top of Javascript that lets you treat all sorts of different datasources as if they were simple functions.
-It doesn't matter if your data comes from remote AJAX calls, from a Firebase stream, or if it represents the changing value of a Text Input. From your point of view: **Everything is a Function**.
+Radioactive is a **Native** FRP ( Functional Reactive Programming ) environment for Javascript.
 
-Once you can see all of your datasources as functions you are free to write complex data processing and transformation code without using callbacks, listening for events or manually coordinating how the different services work. If data changes, locally or on the server, everything will be updated automatically
+By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive figure out how and when to deal with **Remote Data Access** and **Change Propagation**.
+
+Within Radioactive everything becomes a function:
+
+* Ajax calls
+* Data Streams ( ex: Firebase )
+* Static and Mutable data
 
 # Getting Started
 
@@ -15,18 +20,23 @@ $ bower install radioactive
 $ npm install radioactive
 ```
 
-## 5 Minute Tour
+## Example
 
 The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
 Notice that we are not using any callbacks or listening to any events.
 Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
 
 ```javascript
+
+// radioactive.data exposes popular datasources as reactive streams
+// but you can easily write your own
+var rates      = radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
+var currency   = radioactive.data("#currency-selector-input");
+var bitcoin    = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+
 radioactive.react(function(){
-  var currency   = radioactive.data("#currency-selector-input");
-  var rates      = radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
-  var bitcoin    = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
-  $("#output").text( "1 BTC =  " + currency + " " + bitcoin * rates[currency] );
+  var value =  bitcoin() * rates().rates[currency()];
+  $("#output").text( "1 BTC =  " + currency() + " " + value );
 })
 ```
 
@@ -37,23 +47,24 @@ The beauty of working with functions is that you can easily refactor and modular
 This leads to purely functional, highly scalable and mantainable code. You can easily unit test your app or replace parts of your code with mock datasources. Here's how a more modularized version of the previous code might look like:
 
 
+For example, let's refactor this a bit
+
 ```javascript
-function getRate( currency ){
-  return radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?").rates[currency];
-}
-function getSelectedCurrency(){
-  return radioactive.data("#currency-selector-input");
-}
-function getLatestBitcoinValue(){
-  return radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+var rates      = radioactive.data("https://openexchangerates.org/api/latest.json?app_id=4a363014b909486b8f49d967b810a6c3&callback=?");
+var currency   = radioactive.data("#currency-selector-input");
+var bitcoin    = radioactive.data("https://publicdata-cryptocurrency.firebaseio.com/bitcoin/last");
+
+function getCurrentBitcoinValue( curr ){
+  return bitcoin() * rates().rates[curr];
 }
 
 radioactive.react(function(){
-  $("#output").text( "1 BTC =  " + currency + " " + getLatestBitcoinValue() * getRate( currency ) );
+  $("#output").text( "1 BTC =  " + currency() + " " + getCurrentBitcoinValue( currency() ) );
 })
 ```
 
-You can find this example on the `/examples` folder.
+
+You can find more examples on the [/examples](https://github.com/radioactive/radioactive/tree/master/examples) folder.
 
 [radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or async services. [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
