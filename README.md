@@ -4,17 +4,17 @@ Radioactive is a **Native** FRP ( Functional Reactive Programming ) environment 
 
 By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive deal with **Async Data Access** and **Automatic Change Propagation**.
 
-Within Radioactive everything becomes a function:
+It takes a radically different approach from Bacon.js and RxJS. You don't have to learn a new API or a different way of thinking. You write simple imperative Javascript code that runs from top to bottom and let Radioactive figure things out for you.
 
-* Ajax calls
-* Data Streams ( ex: Firebase )
-* Static and Mutable data
+In a nutshell. You can forget about callbacks and events and work as if all data was local and stable.
+
 
 ## Example
 
-The following snippet shows how easy it is to work with an Ajax datasource, a Firebase stream and a stream of data from an HTML text input.
-Notice that there are no callbacks or events.
-Yet, somehow, if data changes, the text value of `#output` will be updated accordingly.
+The following snippet shows how easy it is to work with an **Ajax Datasource**, a **Firebase stream** and a **stream of data from an HTML text input**.
+Notice that, even though they are completely different in nature, they can all be treated like normal functions and there are no callbacks or events.
+
+And this completely reactive of course: If data changes the text value of `#output` will be updated accordingly.
 
 ```javascript
 
@@ -83,18 +83,18 @@ Depending on where you come from, there are many ways to describe Radioactive.
 * A special kind of async flow control library
 * An effort to fix a long standing problem at the level where it should be solved ( at the language core ), once and for all, so we can stop reinventing the wheel and focus on the next set of problems.
 
-Next generation UI frameworks can leverage Radiaoctive as their data-binding layer.
+Next generation UI frameworks can leverage Radioactive as their data-binding layer.
 Data source publishers can use Radioactive to provide a more user-friendly API.
 
 # How does Radioactive Compare to X?
 
 
 * Bacon.js, Rx.js and similar FRP libraries
- * Radioactive focuses on *Native* integration with Javascript
- * Radioactive interoperates with RxJs ( see [radioactive.rx](https://github.com/radioactive/radioactive/wiki/radioactive.rx) ) 
+ * Radioactive takes a different approach and focuses on *Native* integration with Javascript. You don't have all the bells and whistles that event-oriented FRP libraries provide, but you have all of Javascript!
+ * Radioactive tightly integrates with RxJs so you can get the best of both worlds ( see [radioactive.rx](https://github.com/radioactive/radioactive/wiki/radioactive.rx) )
 * UI Frameworks like Angular.js, Knockout, etc 
- *  Radioactive is not a UI framework
- *  TODO: more on this
+ *  Radioactive is not a UI prescriptive UI framework. It is a fundamental low level pattern. Think of it as jQuery for reactive data
+ *  UI Frameworks could take advantage of Radioactive as a basis of their UI templating ( aka data binding ) mechanism
 
 
 # Community
