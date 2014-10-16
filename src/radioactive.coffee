@@ -333,7 +333,9 @@ syncify = ( opts ) ->
           c = build_cell new PendingSignal
           c.___args = args
           if opts.ttl isnt 0 then c.___timeout = delay opts.ttl, -> reset_cell key
-          opts.func.apply null, args.concat [c]
+          # we the cell as a callback and we also check for the case of a Promise being returned
+          deferred = opts.func.apply null, args.concat [c]
+          deferred?.then? ( (res) -> c res ), ( err ) ->  c err, null
           c
       reset_cell = ( key ) ->
         if ( cell = cells[key] )?
