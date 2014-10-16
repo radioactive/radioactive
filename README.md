@@ -4,11 +4,10 @@ Radioactive is a **Native** FRP ( Functional Reactive Programming ) environment 
 
 By **Native** we mean that it enables Functional Reactive Programming **at the language level**. You can write plain Javascript code and let Radioactive deal with **Async Data Access** and **Automatic Change Propagation**.
 
-Within Radioactive everything becomes a function:
+It takes a radically different approach from Bacon.js and RxJS. You don't have to learn a new API or a different way of thinking. You write simple imperative Javascript code that runs from top to bottom and let Radioactive figure things out for you.
 
-* Ajax calls
-* Data Streams ( ex: Firebase )
-* Static and Mutable data
+In a nutshell. You can forget about callbacks and events and work as if all data was local and stable.
+
 
 ## Example
 
