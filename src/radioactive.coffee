@@ -521,7 +521,7 @@ distinct = ( expr, comparator = EQUALS ) ->
 
 
 intercept = ( expr, predicate ) ->
-  return expr() unless ReactiveEval.active()
+  return Try.eval expr unless ReactiveEval.active()
   res = ReactiveEval.eval expr
   if res.monitor?
     notifier = ReactiveEval.notifier()
