@@ -188,6 +188,7 @@ class Try
       comparator other.error, @error
     else
       comparator other.result, @result
+  merge: -> if @error? then @error else @result
   @eval: ( expr ) -> try new Try null, expr() catch e then new Try e
   @err: ( v ) -> new Try v, null
   @res: ( v ) -> new Try null, v
@@ -492,6 +493,48 @@ poll = ( interval, expr ) ->
     res.get()
 
 
+# ( expr ) ->
+# ( delay, expr ) ->
+throttle = ( delay, expr ) ->
+  if typeof delay is 'function'
+    expr  = delay
+    delay = 300
+  return expr() unless ReactiveEval.active()
+  res = ReactiveEval.eval expr
+  ### TODO
+  if res.monitor?
+    notifier = ReactiveEval.notifier()
+    res.monitor.once 'fire', iter = ->
+      r = ReactiveEval.eval expr
+      if predicate r.result.error, r.result.result
+        r.monitor?.cancel()
+        next_tick notifier
+      else
+      r.monitor?.once 'fire', iter
+  ###
+  res.result
+
+
+distinct = ( expr, comparator = EQUALS ) ->
+  v = intercept expr, ( r ) -> not r.equals v, comparator
+  v.get()
+
+
+intercept = ( expr, predicate ) ->
+  return expr() unless ReactiveEval.active()
+  res = ReactiveEval.eval expr
+  if res.monitor?
+    notifier = ReactiveEval.notifier()
+    res.monitor.once 'fire', iter = ->
+      r = ReactiveEval.eval expr
+      if predicate r.result
+        r.monitor?.cancel()
+        next_tick -> notifier.fire()
+      else
+        r.monitor?.once 'fire', iter
+  res.result
+
+
 radioactive_data = do ->
   json_service = do ->
     cached = undefined
@@ -680,6 +723,8 @@ build_public_api = ->
   radioactive.PendingSignal = PendingSignal
 
   radioactive.rx = rxjs
+
+  radioactive.distinct = distinct
 
   ###
     Exported internals ( for unit testing only )
