@@ -610,11 +610,11 @@ is_pending = ( expr ) ->
     expr()
     false
   catch e
-  if e instanceof PendingSignal
-    PartialResultMarker.mark()
-    true
-  else
-    false
+    if e instanceof PendingSignal
+      PartialResultMarker.mark()
+      true
+    else
+      false
 
 
 build_public_api = ->
