@@ -18,6 +18,12 @@ delay            = -> setTimeout arguments[1], arguments[0]
 
 EQUALS           = (a, b) -> a is b
 
+throttler = ( ms ) ->
+  t = undefined
+  ( f ) ->
+    clearTimeout t if t?
+    t = setTimeout f, ms if f?
+
 
 class PendingSignal extends Error
   constructor: -> super "PendingSignal"
@@ -314,7 +320,14 @@ class ReactiveLoop extends Base
   @stack: new StackVal
 
 
+promise_xor_callback = ( async_func, cb ) ->
+  ready = no
+  cb2 = (e, r) -> cb e, r unless ready ; ready = yes
+  async_func( cb2 )?.then? ( (r) -> cb2 undefined, r ), (e) -> cb2 e
+
+
 syncify = ( opts ) ->
+
   opts = func: opts if typeof opts is 'function'
   opts.global ?= no
   opts.ttl    ?= 0
@@ -334,9 +347,7 @@ syncify = ( opts ) ->
           c = build_cell new PendingSignal
           c.___args = args
           if opts.ttl isnt 0 then c.___timeout = delay opts.ttl, -> reset_cell key
-          # we pass the cell as callback and we also check for the case of a Promise being returned
-          deferred = opts.func.apply null, args.concat [c]
-          deferred?.then? ( (res) -> c res ), ( err ) ->  c err, null
+          promise_xor_callback (( cb ) -> opts.func.apply null, args.concat [cb]) , c
           c
       reset_cell = ( key ) ->
         if ( cell = cells[key] )?
@@ -464,7 +475,6 @@ build_cell = ( initial_value, opts = {} ) ->
   if initial_value? then doset initial_value
   api
 
-
 ###
   Wraps an expression.
   After the expression is evaluated.
@@ -501,18 +511,14 @@ throttle = ( delay, expr ) ->
     delay = 300
   return expr() unless ReactiveEval.active()
   res = ReactiveEval.eval expr
-  ### TODO
   if res.monitor?
+    th = throttler delay
     notifier = ReactiveEval.notifier()
-    res.monitor.once 'fire', iter = ->
+    res.monitor?.once 'fire', iter = ->
+      th -> notifier.fire()
       r = ReactiveEval.eval expr
-      if predicate r.result.error, r.result.result
-        r.monitor?.cancel()
-        next_tick notifier
-      else
       r.monitor?.once 'fire', iter
-  ###
-  res.result
+  res.result.get
 
 
 distinct = ( expr, comparator = EQUALS ) ->
@@ -520,7 +526,7 @@ distinct = ( expr, comparator = EQUALS ) ->
   v.get()
 
 
-intercept = ( expr, predicate ) ->
+intercept = ( expr, predicate ) -> # :Try
   return Try.eval expr unless ReactiveEval.active()
   res = ReactiveEval.eval expr
   if res.monitor?
