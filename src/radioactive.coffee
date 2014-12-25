@@ -677,6 +677,8 @@ build_public_api = ->
 
   radioactive.cell      = build_cell
 
+  radioactive.cell.pending = -> build_cell new PendingSignal
+
   radioactive.active    = -> ReactiveEval.active()
 
   radioactive.notifier  = ( callback ) ->
