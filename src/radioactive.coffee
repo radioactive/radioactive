@@ -734,6 +734,8 @@ build_public_api = ->
 
   radioactive.distinct = distinct
 
+  radioactive.safecatch = ( error ) -> throw error if is_special_error error
+
   ###
     Exported internals ( for unit testing only )
   ###
