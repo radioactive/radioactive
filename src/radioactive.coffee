@@ -5,7 +5,7 @@ serial = do -> ii = 0 ; -> ii++
 
 WIKI_URL                   = 'https://github.com/radioactive/radioactive/wiki'
 DEBUG                      = yes
-DEFAULT_LOOP_DELAY         = 50
+DEFAULT_LOOP_DELAY         = 10
 LOOP_ITERATIONS_TO_SURVIVE = 2
 
 is_special_error = ( e ) -> e instanceof PendingSignal or e instanceof StopSignal
