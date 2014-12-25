@@ -420,7 +420,7 @@ class ReactiveEval
     res = ReactiveEval.eval expr
     res.monitor?.cancel()
     delete res.result.error if is_special_error res.result.error
-    res.result
+    res.result.get()
   @eval: ( expr ) ->
     rev = new ReactiveEval expr
     @stack.push rev
@@ -514,11 +514,11 @@ throttle = ( delay, expr ) ->
   if res.monitor?
     th = throttler delay
     notifier = ReactiveEval.notifier()
-    res.monitor?.once 'fire', iter = ->
+    res.monitor.once 'fire', iter = ->
       th -> notifier.fire()
       r = ReactiveEval.eval expr
       r.monitor?.once 'fire', iter
-  res.result.get
+  res.result.get()
 
 
 distinct = ( expr, comparator = EQUALS ) ->
@@ -733,6 +733,8 @@ build_public_api = ->
   radioactive.rx = rxjs
 
   radioactive.distinct = distinct
+
+  radioactive.throttle = throttle
 
   radioactive.safecatch = ( error ) -> throw error if is_special_error error
 
