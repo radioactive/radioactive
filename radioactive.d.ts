@@ -23,7 +23,7 @@ declare module "radioactive" {
      * @param expr Radioactive Javascript function
      * @param callback Node.js style callback
      */
-    function r<T>( expr: () => T, callback: Callback<T> ) : r.Stopper;
+    function r<T>( expr: () => T, callback: r.Callback<T> ) : r.Stopper;
 
 
     //////////// radioactive() --> radioactive.cell()
