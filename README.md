@@ -53,6 +53,12 @@ radioactive.react(function(){
 
 You can find more examples on the [/examples](https://github.com/radioactive/radioactive/tree/master/examples) folder.
 
+Or checkout this examples in the wild:
+
+- [radioactive (XKCD)](https://github.com/hemanth/radioactive-xkcd)
+- [radioactive (Pokemon)](https://github.com/hemanth/radioactive-pokemon)
+- [radioactive with react (Marvel API)](https://github.com/stoeffel/radioactive-react-example)
+
 [radioactive.data](https://github.com/radioactive/radioactive/wiki/radioactive.data) knows how to connect to a series of popular datasources out-of-the box, but the real power of Radioactive is that it is highly extensible. There are many ways to connect your own streams or [async services](https://github.com/radioactive/radioactive/wiki/radioactive.syncify). [Third party integrations](https://github.com/radioactive/radioactive/wiki/Modules) are also available.
 
 
@@ -92,7 +98,7 @@ Data source publishers can use Radioactive to provide a more user-friendly API.
 * Bacon.js, Rx.js and similar FRP libraries
  * Radioactive takes a different approach and focuses on *Native* integration with Javascript. You don't have all the bells and whistles that event-oriented FRP libraries provide, but you have all of Javascript!
  * Radioactive tightly integrates with RxJs so you can get the best of both worlds ( see [radioactive.rx](https://github.com/radioactive/radioactive/wiki/radioactive.rx) )
-* UI Frameworks like Angular.js, Knockout, etc 
+* UI Frameworks like Angular.js, Knockout, etc
  *  Radioactive is not a UI prescriptive UI framework. It is a fundamental low level pattern. Think of it as jQuery for reactive data
  *  UI Frameworks could take advantage of Radioactive as a basis of their UI templating ( aka data binding ) mechanism
 
