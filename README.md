@@ -53,7 +53,7 @@ radioactive.react(function(){
 
 You can find more examples on the [/examples](https://github.com/radioactive/radioactive/tree/master/examples) folder.
 
-Or checkout this examples in the wild:
+Or check out these examples in the wild:
 
 - [radioactive (XKCD)](https://github.com/hemanth/radioactive-xkcd)
 - [radioactive (Pokemon)](https://github.com/hemanth/radioactive-pokemon)
